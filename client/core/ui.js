@@ -25,6 +25,7 @@ const UI = {
     this.acts[name] = fn;
   },
   actions(map) { for (const [k, fn] of Object.entries(map)) this.action(k, fn); },
+  // nav({ id, label, icon, order, key, panel? 打开哪个面板, run? 不开面板、直接执行 })
   nav(def) { this.navs.push(Object.assign({ order: 50, panel: def.id }, def)); this.navs.sort((a, b) => a.order - b.order); },
   goal(priority, fn) { this.goals.push({ p: priority, fn }); this.goals.sort((a, b) => a.p - b.p); },
   goalExtra(fn) { this.goalExtras.push(fn); },
@@ -72,9 +73,14 @@ const UI = {
   buildNav() {
     const nav = $('#nav');
     nav.innerHTML = this.navs.map(n => `<button data-open="${n.panel}" ${n.tab ? `data-tab="${n.tab}"` : ''} data-nav="${n.id}" title="${n.label}${n.key ? `（${n.key.toUpperCase()}）` : ''}"><span>${gi(n.icon, '#ffe9b0', '24px')}</span>${n.label}<i></i></button>`).join('');
-    nav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { Sound.unlock(); Sound.click(); this.open(b.dataset.open, b.dataset.tab); }));
+    nav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { Sound.unlock(); Sound.click(); this.navGo(this.navs.find(n => n.id === b.dataset.nav)); }));
+  },
+  navGo(n) {
+    if (!n) return;
+    if (n.run) n.run(); else this.open(n.panel, n.tab);
   },
   onKey(e) {
+    if (CF.first('ui.keyBlocked', e)) return; // 例如桌面宠物模式下不响应键盘
     if (typeof Story !== 'undefined' && Story.active) { if (e.code === 'Space' || e.key === 'Enter' || e.key === 'z') { e.preventDefault(); Story.next(); } return; }
     if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
     const m = CF.modes.cur();
@@ -83,7 +89,7 @@ const UI = {
     if (this.panel || e.metaKey || e.ctrlKey) return;
     if (m.key && m.key(e)) return;
     const n = this.navs.find(x => x.key === e.key);
-    if (n) this.open(n.panel, n.tab);
+    if (n) this.navGo(n);
   },
 
   // ---------- HUD ----------

@@ -4,12 +4,42 @@
 //   菜单「小猫钓鱼 → 服务器地址…」可以改成你部署在云上的服务器地址
 // 旧版本（v0.4 及以前）的本地存档 ~/Library/Application Support/CatFishing/save.json
 // 会在第一次登录时提示导入到账号里，导入后改名为 save.imported.json。
+// 桌面宠物：网页发来 {cmd:'pet', on:true, w, h, hit} 时，把窗口变成透明、无边框、置顶的小浮窗；
+//   只有小猫和小船能点到（其余地方点穿到桌面），左键拖动，右键菜单「还原窗口」。
 import Cocoa
 import WebKit
 
-final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler, WKNavigationDelegate {
+// 宠物模式时盖在网页上面的一层透明视图：接住鼠标——左键拖动窗口，右键（或 control+点击）弹出菜单
+final class PetOverlay: NSView {
+    weak var owner: AppDelegate?
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override func mouseDown(with event: NSEvent) {
+        if event.modifierFlags.contains(.control) { showMenu(event); return }
+        window?.performDrag(with: event)
+    }
+    override func rightMouseDown(with event: NSEvent) { showMenu(event) }
+    override func menu(for event: NSEvent) -> NSMenu? { owner?.petMenu() }
+    private func showMenu(_ event: NSEvent) {
+        guard let menu = owner?.petMenu() else { return }
+        NSMenu.popUpContextMenu(menu, with: event, for: self)
+    }
+}
+
+final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKScriptMessageHandler, WKNavigationDelegate {
     var window: NSWindow!
     var webView: WKWebView!
+    var container: NSView!
+    let normalMinSize = NSSize(width: 960, height: 620)
+    let normalBackground = NSColor(calibratedRed: 0.04, green: 0.06, blue: 0.12, alpha: 1)
+
+    // 桌面宠物
+    var petOn = false
+    var petOverlay: PetOverlay?
+    var petTimer: Timer?
+    var petHit: [CGRect] = []
+    var normalFrame = NSRect.zero
+    var normalStyle: NSWindow.StyleMask = [.titled, .closable, .miniaturizable, .resizable]
+    var petMenuItem: NSMenuItem?
     let defaultServer = "http://localhost:28787"
 
     var serverURL: String {
@@ -52,9 +82,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
                           styleMask: [.titled, .closable, .miniaturizable, .resizable],
                           backing: .buffered, defer: false)
         window.title = "小猫钓鱼"
-        window.minSize = NSSize(width: 960, height: 620)
-        window.contentView = webView
-        window.backgroundColor = NSColor(calibratedRed: 0.04, green: 0.06, blue: 0.12, alpha: 1)
+        window.minSize = normalMinSize
+        // 网页放在一个容器里：宠物模式时在它上面再盖一层 PetOverlay
+        container = NSView()
+        window.contentView = container
+        webView.frame = container.bounds
+        webView.autoresizingMask = [.width, .height]
+        container.addSubview(webView)
+        window.backgroundColor = normalBackground
+        window.delegate = self
         window.center()
         window.setFrameAutosaveName("CatFishingMainWindow")
         window.makeKeyAndOrderFront(nil)
@@ -121,9 +157,126 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
             let done = supportDir.appendingPathComponent("save.imported.json")
             try? FileManager.default.removeItem(at: done)
             try? FileManager.default.moveItem(at: legacySaveURL, to: done)
-        } else if message.name == "native", let cmd = message.body as? String, cmd == "retry" {
-            loadGame()
+        } else if message.name == "native" {
+            if let cmd = message.body as? String {
+                if cmd == "retry" { loadGame() }
+            } else if let d = message.body as? [String: Any], (d["cmd"] as? String) == "pet" {
+                if (d["on"] as? Bool) == true {
+                    let w = CGFloat((d["w"] as? Double) ?? 240), h = CGFloat((d["h"] as? Double) ?? 150)
+                    var rects: [CGRect] = []
+                    if let hit = d["hit"] as? [[Double]] {
+                        for r in hit where r.count == 4 { rects.append(CGRect(x: r[0], y: r[1], width: r[2], height: r[3])) }
+                    }
+                    enterPet(size: NSSize(width: w, height: h), hit: rects)
+                } else {
+                    leavePet(notifyWeb: false)
+                }
+            }
         }
+    }
+
+    // ---------- 桌面宠物 ----------
+    func enterPet(size: NSSize, hit: [CGRect]) {
+        petHit = hit.isEmpty ? [CGRect(origin: .zero, size: size)] : hit
+        if petOn { return }
+        if window.styleMask.contains(.fullScreen) { // 先退出全屏，动画结束后再变成宠物
+            window.toggleFullScreen(nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.enterPet(size: size, hit: hit) }
+            return
+        }
+        petOn = true
+        normalFrame = window.frame
+        normalStyle = window.styleMask
+        window.setFrameAutosaveName("")            // 别把小浮窗的位置记成主窗口的位置
+        window.styleMask = [.borderless]
+        window.minSize = NSSize(width: 40, height: 40)
+        window.isOpaque = false
+        window.backgroundColor = .clear
+        window.hasShadow = false
+        window.level = .floating                   // 浮在其他窗口上面
+        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
+        window.setFrame(NSRect(origin: petOrigin(for: size), size: size), display: true)
+
+        let overlay = PetOverlay(frame: container.bounds)
+        overlay.autoresizingMask = [.width, .height]
+        overlay.owner = self
+        container.addSubview(overlay)
+        petOverlay = overlay
+
+        // 鼠标不在小猫和小船上时，点击穿过浮窗落到桌面上
+        let timer = Timer(timeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in self?.updateClickThrough() }
+        RunLoop.main.add(timer, forMode: .common)
+        petTimer = timer
+        window.orderFrontRegardless()
+        updatePetMenuItem()
+    }
+
+    func leavePet(notifyWeb: Bool) {
+        if !petOn { return }
+        petOn = false
+        petTimer?.invalidate(); petTimer = nil
+        petOverlay?.removeFromSuperview(); petOverlay = nil
+        window.ignoresMouseEvents = false
+        window.styleMask = normalStyle
+        window.isOpaque = true
+        window.backgroundColor = normalBackground
+        window.hasShadow = true
+        window.level = .normal
+        window.collectionBehavior = []
+        window.minSize = normalMinSize
+        window.setFrame(normalFrame, display: true)
+        window.setFrameAutosaveName("CatFishingMainWindow")
+        window.title = "小猫钓鱼"
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        if notifyWeb { webView.evaluateJavaScript("window.Pet && Pet.leave(true)", completionHandler: nil) }
+        updatePetMenuItem()
+    }
+
+    func updateClickThrough() {
+        guard petOn, let w = window else { return }
+        let m = NSEvent.mouseLocation, f = w.frame
+        let p = CGPoint(x: m.x - f.minX, y: f.maxY - m.y)   // 换成「从左上角算」的坐标，和网页一致
+        let inside = petHit.contains { $0.contains(p) }
+        if w.ignoresMouseEvents == inside { w.ignoresMouseEvents = !inside }
+    }
+
+    // 浮窗放在哪：上次的位置（还在屏幕上的话），否则屏幕右下角
+    func petOrigin(for size: NSSize) -> NSPoint {
+        if let s = UserDefaults.standard.string(forKey: "petOrigin") {
+            let p = NSPointFromString(s)
+            if NSScreen.screens.contains(where: { $0.visibleFrame.intersects(NSRect(origin: p, size: size)) }) { return p }
+        }
+        let vf = (NSScreen.main ?? NSScreen.screens.first)?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
+        return NSPoint(x: vf.maxX - size.width - 40, y: vf.minY + 40)
+    }
+
+    func windowDidMove(_ notification: Notification) {
+        if petOn { UserDefaults.standard.set(NSStringFromPoint(window.frame.origin), forKey: "petOrigin") }
+    }
+
+    // 右键菜单
+    func petMenu() -> NSMenu {
+        let menu = NSMenu()
+        let restore = NSMenuItem(title: "还原窗口", action: #selector(restoreFromPet(_:)), keyEquivalent: "")
+        restore.target = self
+        menu.addItem(restore)
+        menu.addItem(.separator())
+        let quit = NSMenuItem(title: "退出 小猫钓鱼", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "")
+        quit.target = NSApp
+        menu.addItem(quit)
+        return menu
+    }
+    @objc func restoreFromPet(_ sender: Any?) { leavePet(notifyWeb: true) }
+    @objc func togglePet(_ sender: Any?) {
+        if petOn { leavePet(notifyWeb: true) }
+        else { webView.evaluateJavaScript("window.Pet && Pet.enter()", completionHandler: nil) }
+    }
+    func updatePetMenuItem() { petMenuItem?.title = petOn ? "还原窗口" : "桌面宠物" }
+
+    // 页面重新载入了（网页里的宠物状态没了）：先把窗口还原
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if petOn { leavePet(notifyWeb: false) }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
@@ -212,6 +365,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
         winMenu.addItem(withTitle: "最小化", action: #selector(NSWindow.performMiniaturize(_:)), keyEquivalent: "m")
         winMenu.addItem(withTitle: "关闭窗口", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
         winMenu.addItem(withTitle: "全屏", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f")
+        winMenu.addItem(.separator())
+        let pet = NSMenuItem(title: "桌面宠物", action: #selector(togglePet(_:)), keyEquivalent: "p")
+        pet.target = self
+        winMenu.addItem(pet)
+        petMenuItem = pet
         winItem.submenu = winMenu
         NSApp.mainMenu = main
     }
