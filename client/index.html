@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小猫钓鱼</title>
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pixel.css">
+<link rel="stylesheet" href="css/core.css">
+</head>
+<body>
+<!-- 这里只有「骨架」：画布、顶部/底部 HUD 的容器和通用弹窗。
+     每个功能模块会在启动时把自己的界面插进来（见 modules/*/）。 -->
+<canvas id="scene"></canvas>
+
+<div id="hud-top">
+  <div class="hud-left">
+    <div class="pill coins"><span class="ico">🪙</span><b id="coins">0</b></div>
+    <div class="pill level" title="等级越高，鱼的售价越高（每级 +2%）">
+      <span>Lv.<b id="lv">1</b></span>
+      <div class="expbar"><div id="expfill"></div></div>
+    </div>
+  </div>
+  <div class="hud-center pill" id="env">
+    <span id="scene-name"></span><span class="sep">·</span>
+    <span id="day"></span><span id="clock"></span><span id="phase"></span><span class="sep">·</span>
+    <span id="weather"></span>
+  </div>
+  <div class="hud-right" id="buffs"></div>
+</div>
+
+<div id="catch-pop"></div>
+<div id="toasts"></div>
+
+<div id="hud-bottom">
+  <div id="adv-bar" class="panel-glass hidden"></div>
+  <div id="nav"></div>
+</div>
+
+<div id="goal" class="panel-glass hidden"></div>
+<div id="tip" class="hidden"></div>
+
+<div id="modal-bg" class="hidden">
+  <div id="modal">
+    <header>
+      <h2 id="modal-title"></h2>
+      <div id="modal-tabs"></div>
+      <button id="modal-close" title="关闭 (Esc)">✕</button>
+    </header>
+    <div id="modal-body"></div>
+    <footer id="modal-foot"></footer>
+  </div>
+</div>
+
+<div id="boot"><div class="boot-cat">🐱</div><div id="boot-msg">加载中…</div></div>
+
+<script src="config.js"></script>
+<script src="modules.js"></script>
+<script src="core/boot.js"></script>
+</body>
+</html>

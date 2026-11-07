@@ -15,7 +15,7 @@ echo "🐱 正在打包 $APP ..."
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp macos/Info.plist "$APP/Contents/Info.plist"
-cp -R web "$APP/Contents/Resources/web"
+# 联网版：游戏页面由服务器提供，App 里不再打包网页
 
 # 编译原生外壳
 swiftc -O -swift-version 5 macos/main.swift \
@@ -40,4 +40,5 @@ xattr -cr "$APP" 2>/dev/null || true
 
 echo "✅ 完成！App 位于：$(pwd)/$APP"
 echo "   可以把它拖进「应用程序」文件夹。"
+echo "   玩之前记得先双击「启动服务器.command」启动游戏服务器。"
 open -R "$APP" 2>/dev/null || true

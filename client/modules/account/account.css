@@ -1,0 +1,25 @@
+/* ===== 账号：登录界面（像素风） ===== */
+#account { position: fixed; inset: 0; z-index: 210; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 30%, #2a3a66 0%, #0b1020 70%); font-family: 'FusionPixel', monospace; }
+#account .ac-box { width: min(380px, 92vw); background: #17131f; color: #f4efe6; border: 4px solid #fff; box-shadow: 0 0 0 4px #000, 0 20px 50px rgba(0,0,0,.6);
+  padding: 22px 24px 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+#account .ac-logo img { width: 96px; height: 96px; animation: bootbob 1.4s ease-in-out infinite; }
+#account .ac-title { font-size: 24px; color: #ffe36e; text-shadow: 2px 2px 0 #000; letter-spacing: 2px; }
+#account .ac-tabs { display: flex; gap: 6px; width: 100%; }
+#account .ac-tabs button { flex: 1; background: #000; color: #a9a2b5; border: 2px solid #4a4058; padding: 6px 0; font: inherit; font-size: 14px; cursor: pointer; }
+#account .ac-tabs button.on { color: #ffe36e; border-color: #fff; }
+#account .ac-form { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+#account label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #c9c0d6; }
+#account input { font: inherit; font-size: 15px; padding: 8px 10px; background: #0b0910; color: #fff; border: 2px solid #4a4058; outline: none; user-select: text; -webkit-user-select: text; }
+#account input:focus { border-color: #ffe36e; }
+#account .ac-msg { min-height: 18px; font-size: 13px; color: #ff9f8a; text-align: center; }
+#account .ac-msg.ok { color: #7cff9a; }
+#account .ac-help { font-size: 12.5px; color: #c9c0d6; text-align: center; line-height: 1.7; }
+#account .ac-go { width: 100%; background: #ffb547; color: #2a1a08; border: 3px solid #000; box-shadow: inset -3px -3px 0 rgba(0,0,0,.25), inset 3px 3px 0 rgba(255,255,255,.35);
+  font: inherit; font-size: 16px; padding: 9px 0; cursor: pointer; }
+#account .ac-go:hover { filter: brightness(1.08); }
+#account .ac-go:disabled { filter: grayscale(.6); cursor: wait; }
+#account .ac-go.ghost { background: #3a3346; color: #f4efe6; }
+#account .ac-row { display: flex; gap: 8px; width: 100%; }
+#account .ac-foot { font-size: 11px; color: #6f667c; }
+.acct-pill { font-size: 12px; gap: 6px; }

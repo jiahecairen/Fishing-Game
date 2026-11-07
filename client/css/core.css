@@ -1,0 +1,7 @@
+/* ===== 内核界面：启动画面 ===== */
+#boot { position: fixed; inset: 0; z-index: 200; background: #0b1020; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #f6f1e7; font-family: 'FusionPixel', monospace; }
+#boot .boot-cat { font-size: 64px; animation: bootbob 1.2s ease-in-out infinite; }
+#boot.err .boot-cat { animation: none; }
+#boot #boot-msg { font-size: 14px; color: #a9b0bf; }
+#boot.err #boot-msg { color: #ffb4a2; }
+@keyframes bootbob { 50% { transform: translateY(-8px); } }

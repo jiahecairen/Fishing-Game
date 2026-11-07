@@ -1,19 +1,26 @@
-# 🐱 小猫钓鱼 (v0.4 · 四季与寄卖行)
+# 🐱 小猫钓鱼（v0.5 · 联网与模块化）
 
-一款可以在 macOS 上挂机的小猫钓鱼游戏。
+一款可以挂机的小猫钓鱼游戏。现在是**联网版**：注册账号、登录，存档保存在游戏服务器上，换电脑也能接着玩。
 
 ## 怎么运行
 
-**方式一：打包成 Mac App（推荐）**
-1. 第一次使用需要 Xcode 命令行工具：终端执行 `xcode-select --install`（装过就跳过）
-2. 双击 `双击打包.command`（或在终端执行 `./build_app.sh`）
-3. 在 `build/` 里得到 `小猫钓鱼.app`，可以拖进「应用程序」
+### 1. 启动游戏服务器
+- 第一次用需要装 **Node.js**：到 https://nodejs.org 下载「LTS」版本，一路下一步装好
+- 双击 `启动服务器.command`，看到「🐱 小猫钓鱼服务器已启动」就好了（这个窗口别关，关了服务器就停了）
+- 浏览器打开 http://localhost:28787 也能直接玩
 
-> 如果提示无法打开 `.command`：右键 → 打开；或在终端先执行 `chmod +x build_app.sh 双击打包.command`
+> 如果提示无法打开 `.command`：右键 → 打开；或在终端执行 `chmod +x 启动服务器.command 双击打包.command build_app.sh`
 
-**方式二：直接用浏览器玩**：双击 `web/index.html` 即可（Safari / Chrome 都行）。
+### 2. 打开游戏
+- **Mac App**：双击 `双击打包.command`（需要 Xcode 命令行工具：`xcode-select --install`），在 `build/` 里得到 `小猫钓鱼.app`
+- App 默认连接本机服务器 `http://localhost:28787`；菜单「小猫钓鱼 → 服务器地址…」可以改成部署在别处的服务器
+- 第一次登录时，如果这台电脑上有 v0.4 以前的旧存档，会问你要不要导入到账号里
 
-App 的存档保存在 `~/Library/Application Support/CatFishing/save.json`，浏览器版存在浏览器本地。
+### 存档在哪里
+- 服务器：`server/data/`（`users.json` 账号、`saves/` 每个玩家一份存档）。**备份这个文件夹就是备份所有存档**
+- 旧版本（v0.4 及以前）的 Mac App 本地存档：`~/Library/Application Support/CatFishing/save.json`（导入账号后改名为 `save.imported.json`）
+- **一键备份**：双击 `备份存档.command`，会把上面两种存档都复制到项目旁边的「小猫钓鱼存档备份」文件夹里（按时间命名，可以随时多备份几次）
+- 服务器设置：`server/config.json`（端口、是否开放注册、是否显示作弊按钮 `devCheats`……）
 
 ## 玩法
 - **挂机**：默认开启自动挂机，小猫会自己抛竿、收竿；关掉游戏后再打开，会结算离线收获（最多 8 小时）
@@ -23,7 +30,7 @@ App 的存档保存在 `~/Library/Application Support/CatFishing/save.json`，�
 - **场景**：宁静湖畔 → 溪谷急流 → 落日海湾 → 冰封雪湖（冰湖晴夜有极光）
 - **背包 / 仓库**：背包满了小猫会停下；仓库可存更多。自动收纳盒、招财猫可让挂机更久
 - **商店**：鱼竿（速度/控鱼/幸运/可钓等级）、鱼线、鱼饵（改变稀有度）、道具（幸运猫铃、祈雨符、晴天娃娃、雾之瓶、夜光浮漂…）、扩容
-- **图鉴**：38 种鱼与杂物，未发现的会显示剪影和出没条件
+- **图鉴**：68 种鱼与杂物（7 个钓点），未发现的会显示剪影和出没条件
 
 
 ### v0.2 冒险篇
@@ -50,7 +57,7 @@ App 的存档保存在 `~/Library/Application Support/CatFishing/save.json`，�
 
 图标素材：[game-icons.net](https://game-icons.net)（Lorc、Delapouite 等，CC BY 3.0）
 
-快捷键：空格 钓鱼/翻对话 · B 背包 · W 仓库 · S 商店 · D 图鉴 · A 冒险 · M 航海图 · Esc 关闭
+快捷键：空格 钓鱼/翻对话 · B 背包 · W 仓库 · S 商店 · K 厨房 · D 图鉴 · A 冒险 · J 工匠 · Q 任务 · M 航海图 · Esc 关闭
 
 ## v0.4 新内容
 - **季节 & 日历**：顶部显示「第N年 季节 月日 时间」，现实 24 分钟 = 游戏 1 天，每月 10 天，3 个月一季。季节影响天气（冬天会下雪）和渔获（季节限定鱼）
@@ -64,33 +71,42 @@ App 的存档保存在 `~/Library/Application Support/CatFishing/save.json`，�
 - **战斗**：进副本/出航前选择 自动 / 纯手动 / Boss 手动；手动时自选技能或吃东西。全新像素战斗场景，有攻击、受击动作和打击特效
 - **一键合成**、全界面像素风（像素字体 Fusion Pixel）
 
-## 项目结构
+## v0.5 新内容
+- **联网**：注册、登录、云存档（每 15 秒自动同步，关闭时也会上传）；同一个账号在别处登录，旧设备会提示并停止同步，不会弄乱存档；离线时长用服务器时间计算
+- **全新架构**：每个功能都是一个独立模块，副本里每个副本、每只怪物都是单独的文件；战斗系统独立；可以随时关掉某个模块。详见 [开发指南.md](开发指南.md)
+- **示例模块**：一个可以走动的小镇（`client/modules/_template`），演示怎么加一个全新玩法
+- 去掉了整体画面的像素滤镜，钓鱼场景恢复高清（界面和战斗仍是像素风）
+- 修复：新买的船耐久是 0、隐藏装备重复入包、第一帧时间为负导致的报错
+
+### v0.5.1 像素小猫 & 普通售卖
+- **新的像素小猫**：钓鱼（举竿、甩竿、等鱼、咬钩、收线）、钓到鱼开心跳、跑鱼难过、航海、副本里走路、小镇四方向走动、战斗（待机、受伤闪白、倒下）、登录画面和角色立绘，全部换成新的像素图；码头上的小桶、咬钩时的「!」、小镇的路牌和草地也用了这套素材。夜晚和季节会给小猫叠上色调。设置里的「经典小猫」可以换回程序画的小猫
+- **普通售卖**：寄卖行暂时关掉了（代码还在），改成在背包 / 仓库 / 船舱里直接卖鱼，按鱼的价值立刻到手；「卖掉杂物和普通鱼」一键清理；料理在厨房里直接卖；招财猫在背包和仓库都满时自动卖掉普通鱼（离线也会）。旧存档里还挂在寄卖行的东西会自动退回背包 / 仓库
+- 想换回寄卖行：在 `client/modules.js` 里把 `'sell'` 注释掉，把 `'market'` 打开
+
+## 项目结构（简版，完整说明见开发指南）
 ```
-web/            游戏本体（HTML + Canvas + JS，无需构建）
-  js/data.js    鱼、场景、天气、商品等数据 —— 想加新鱼改这里
-  js/game.js    核心逻辑：钓鱼状态机、概率、离线挂机、存档
-  js/render.js  画面：天色、天气粒子、场景、小猫、鱼
-  js/ui.js      界面面板
-  js/data_adv.js   冒险数据：宝藏、装备、怪物、副本、航线、剧情台词 —— 改剧情改这里
-  js/adventure.js  冒险逻辑：战斗、航行、副本、宝箱
-  js/render_adv.js 船和洞穴画面
-  js/ui_adv.js     对话框、战斗窗口、冒险/锻造/航海面板
-  js/sprites.js    像素立绘（每个怪物一张像素网格）
-  js/events.js     突发事件
-  js/icons.js      装备道具图标（game-icons.net）
-  js/cheat.js      作弊面板
-  js/data_v4.js    v0.4 数据：新钓点、船坞、材料、套装、任务、委托、料理、寄卖行会员
-  js/market.js     寄卖行（价格指数、挂单、会员、月结）
-  js/cook.js       烹饪
-  js/quests.js     任务线与委托
-  js/battle_fx.js  像素战斗场景与打击特效
-  js/ui_v4.js      v0.4 界面（背包/仓库/寄卖行/厨房/任务/工匠）
-  css/pixel.css    像素风皮肤
-  fonts/           Fusion Pixel 像素字体（OFL-1.1）
-macos/          Swift 原生外壳（WKWebView）+ 图标
-build_app.sh    打包脚本
+client/                 游戏客户端（服务器会把它发给浏览器 / App）
+  modules.js            模块清单：开关功能就改这里
+  core/                 内核：加载器、事件与钩子、存档、界面框架、画面模式、网络……（不含玩法）
+  modules/              每个功能一个文件夹
+    account/ fishing/ inventory/ shop/ dex/ hero/ treasure/ forge/
+    battle/             战斗系统（引擎 / 技能 / 像素战斗画面 / 界面）
+    monsters/           怪物，每只一个文件
+    dungeon/dungeons/   副本，每个一个文件
+    voyage/ events/ kitchen/ quests/ story/ settings/ cheat/
+    sell/               普通售卖（现在用的）
+    market/             寄卖行（暂时关掉，代码保留）
+    art/                像素图集（小猫各种动作、道具小图）
+    _template/          新模块模板（示例小镇）
+server/                 游戏服务器（Node.js，零依赖）
+  index.js  config.json  core/  modules/（auth 账号、save 云存档……）
+macos/                  Mac App 外壳（WKWebView）
+tools/art/              原始像素精灵表 + 换图说明
+启动服务器.command       双击启动服务器
+双击打包.command         打包 Mac App
 ```
 
 ## 素材致谢
-- 图标：game-icons.net（CC BY 3.0）
-- 字体：Fusion Pixel Font（SIL OFL 1.1，见 web/fonts/OFL-LICENSE.txt）
+- 图标：game-icons.net（Lorc、Delapouite 等，CC BY 3.0）
+- 字体：Fusion Pixel Font（SIL OFL 1.1，见 client/assets/fonts/OFL-LICENSE.txt）
+- 怪物像素立绘为本游戏原创；小猫像素精灵表由项目作者提供（tools/art/source/）

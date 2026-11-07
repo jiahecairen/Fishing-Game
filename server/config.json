@@ -1,0 +1,10 @@
+{
+  "port": 28787,
+  "host": "0.0.0.0",
+  "dataDir": "./data",
+  "clientDir": "../client",
+  "devCheats": true,
+  "sessionDays": 30,
+  "maxSaveKB": 4096,
+  "allowRegister": true
+}
