@@ -69,6 +69,20 @@ void Ui::render(const GameState& state, bool saveOk) {
     C2D_DrawTriangle(168 + boatX, 120 + wave + catY, CAT_ORANGE, 176 + boatX, 104 + wave + catY, CAT_ORANGE, 180 + boatX, 121 + wave + catY, CAT_ORANGE, 0.5f);
     circle(164 + boatX, 126 + wave + catY, 2, CAT_DARK);
     circle(173 + boatX, 126 + wave + catY, 2, CAT_DARK);
+    // The cat is always fishing when it is not travelling.
+    if (state.destination.empty()) {
+        const float bobX = 285.0f + std::sin(time_ * 1.1f) * 4.0f;
+        const float bobY = 164.0f + wave;
+        C2D_DrawLine(178 + boatX, 119 + wave + catY, CAT_DARK,
+            214 + boatX, 86 + wave, CAT_DARK, 2.0f, 0.3f);
+        C2D_DrawLine(214 + boatX, 86 + wave, WHITE,
+            bobX, bobY, WHITE, 1.0f, 0.3f);
+        circle(bobX, bobY, 4, CAT_ORANGE);
+        circle(bobX, bobY + 6, 10, C2D_Color32(0xA3, 0xE9, 0xEE, 0xA0));
+        text("FISHING", 278, 102, 0.32f, WHITE);
+    } else {
+        text("SAILING", 278, 102, 0.32f, WHITE);
+    }
     rect(134, 166, 128, 4, WHITE);
     rect(150 + wave, 183, 74, 3, WHITE);
     rect(250 - wave, 192, 36, 3, WHITE);
