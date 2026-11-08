@@ -47,7 +47,10 @@ void Ui::render(const GameState& state, bool saveOk) {
     C2D_TextBufClear(textBuf_);
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
-    C2D_TargetClear(top_, SKY);
+    const bool rain = state.weather == "RAIN";
+    const bool fog = state.weather == "FOG";
+    const u32 sky = rain ? C2D_Color32(0x62, 0x82, 0x9B, 0xFF) : fog ? C2D_Color32(0xAC, 0xC3, 0xC4, 0xFF) : SKY;
+    C2D_TargetClear(top_, sky);
     C2D_SceneBegin(top_);
     rect(0, 96, 400, 144, SEA);
     rect(0, 148, 400, 92, SEA_DARK);
@@ -55,7 +58,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("CAT DRIFT", 14, 7, 0.65f, WHITE);
     std::snprintf(line, sizeof(line), "DAY %d", state.day);
     text(line, 320, 8, 0.48f, YELLOW);
-    circle(350, 62, 18, YELLOW);
+    if (!rain && !fog) circle(350, 62, 18, YELLOW);
     circle(110, 62, 13, WHITE);
     circle(126, 62, 17, WHITE);
     rect(100, 62, 44, 12, WHITE);
@@ -86,10 +89,18 @@ void Ui::render(const GameState& state, bool saveOk) {
     rect(134, 166, 128, 4, WHITE);
     rect(150 + wave, 183, 74, 3, WHITE);
     rect(250 - wave, 192, 36, 3, WHITE);
+    if (rain) {
+        for (int i = 0; i < 12; ++i) {
+            const float x = static_cast<float>((i * 37 + static_cast<int>(time_ * 40.0f)) % 420 - 10);
+            const float y = static_cast<float>((i * 23 + static_cast<int>(time_ * 90.0f)) % 150);
+            C2D_DrawLine(x, y, WHITE, x - 5, y + 13, WHITE, 1.0f, 0.2f);
+        }
+    }
 
     rect(12, 202, 376, 26, PANEL);
     text("PLACE", 20, 208, 0.38f, YELLOW);
     text(state.location.c_str(), 72, 208, 0.38f, WHITE);
+    text(state.weather.c_str(), 170, 208, 0.35f, rain ? YELLOW : WHITE);
     text(state.lostContact ? "SIGNAL LOST" : "SIGNAL ONLINE", 270, 208, 0.35f, state.lostContact ? YELLOW : WHITE);
     text("CAT IS LIVING...", 14, 38, 0.34f, SEA_DARK);
 

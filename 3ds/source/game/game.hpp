@@ -16,6 +16,7 @@ struct GameState {
     int battery;
     std::string location;
     std::string destination;
+    std::string weather;
     CatMood mood;
     std::string message;
     bool lostContact;

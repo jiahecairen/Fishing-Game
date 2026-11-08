@@ -2,7 +2,7 @@
 
 namespace catdrift {
 
-Game::Game() : state_{1, 4, "DRIFT SEA", "", CatMood::Calm,
+Game::Game() : state_{1, 4, "DRIFT SEA", "", "CLEAR", CatMood::Calm,
     "BEEPER: This is Cat. I am alive. The sea is quiet.", false, 0}, idleSeconds_(0.0f) {}
 
 const GameState& Game::state() const {
@@ -63,6 +63,17 @@ void Game::waitAndSavePower() {
 
 void Game::advanceDay() {
     state_.day++;
+    const std::string oldWeather = state_.weather;
+    if (state_.day % 6 == 0) state_.weather = "RAIN";
+    else if (state_.day % 5 == 0) state_.weather = "FOG";
+    else state_.weather = "CLEAR";
+    if (state_.weather != oldWeather) {
+        receive(state_.weather == "RAIN"
+            ? "BEEPER: Rain is falling. The sea is getting darker."
+            : state_.weather == "FOG"
+                ? "BEEPER: Fog is covering the water. I can barely see the mast."
+                : "BEEPER: The clouds opened. I can see the stars again.");
+    }
     if (state_.travelDays > 0) {
         state_.travelDays--;
         if (state_.travelDays == 0 && !state_.destination.empty()) {

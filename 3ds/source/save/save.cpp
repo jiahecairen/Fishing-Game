@@ -39,6 +39,8 @@ bool Save::load(GameState& state) {
     if (ok) state.lostContact = std::atoi(line.c_str()) != 0;
     ok = ok && readLine(file, line);
     if (ok) state.travelDays = std::atoi(line.c_str());
+    if (readLine(file, line)) state.weather = line;
+    if (state.weather.empty()) state.weather = "CLEAR";
     std::fclose(file);
     return ok;
 }
@@ -55,6 +57,7 @@ bool Save::write(const GameState& state) {
         state.message.c_str(),
         state.lostContact ? 1 : 0,
         state.travelDays);
+    std::fprintf(file, "%s\n", state.weather.c_str());
     const bool ok = std::fclose(file) == 0;
     return ok;
 }
