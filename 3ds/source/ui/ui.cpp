@@ -151,35 +151,35 @@ void Ui::render(const GameState& state, bool saveOk) {
 
     // ---------- Final text pass, always above every card ----------
     C2D_SceneBegin(top_);
-    text("CAT DRIFT", 14, 7, 0.62f, WHITE);
+    text("CAT DRIFT", 14, 6, 0.78f, WHITE);
     std::snprintf(line, sizeof(line), "BEEP %d", state.battery);
-    text(line, 250, 7, 0.40f, WHITE);
+    text(line, 250, 6, 0.52f, WHITE);
     std::snprintf(line, sizeof(line), "DAY %d", state.day);
-    text(line, 320, 7, 0.46f, GOLD);
-    text("CAT IS LIVING...", 20, 48, 0.32f, MUTED);
-    text(state.destination.empty() ? "FISHING" : "SAILING", 278, 105, 0.32f, WHITE);
-    text("PLACE", 20, 210, 0.32f, GOLD);
-    text(state.location.c_str(), 72, 210, 0.32f, WHITE);
-    text(state.weather.c_str(), 185, 210, 0.32f, rain ? GOLD : WHITE);
-    text(state.lostContact ? "SIGNAL LOST" : "ONLINE", 305, 210, 0.28f, state.lostContact ? GOLD : WHITE);
+    text(line, 320, 6, 0.58f, GOLD);
+    text("CAT IS LIVING...", 20, 47, 0.44f, MUTED);
+    text(state.destination.empty() ? "FISHING" : "SAILING", 278, 103, 0.42f, WHITE);
+    text("PLACE", 20, 208, 0.40f, GOLD);
+    text(state.location.c_str(), 72, 208, 0.40f, WHITE);
+    text(state.weather.c_str(), 185, 208, 0.40f, rain ? GOLD : WHITE);
+    text(state.lostContact ? "LOST" : "ONLINE", 305, 208, 0.34f, state.lostContact ? GOLD : WHITE);
 
     C2D_SceneBegin(bottom_);
-    text("SATELLITE MAP", 12, 8, 0.50f, WHITE);
-    text("DRIFT SEA", 48, 101, 0.31f, WHITE);
-    text("OLD LAB", 196, 53, 0.30f, INK);
-    text("RUINS", 232, 115, 0.30f, INK);
-    text(animal.c_str(), 16, 136, 0.28f, MUTED);
-    text("BEEPER", 18, 146, 0.34f, GOLD);
-    text(message.c_str(), 18, 163, 0.27f, WHITE);
+    text("SATELLITE MAP", 12, 6, 0.64f, WHITE);
+    text("DRIFT SEA", 42, 100, 0.40f, WHITE);
+    text("OLD LAB", 190, 53, 0.39f, INK);
+    text("RUINS", 226, 115, 0.39f, INK);
+    text(animal.c_str(), 16, 132, 0.34f, MUTED);
+    text("BEEPER", 18, 145, 0.46f, GOLD);
+    text(message.c_str(), 18, 163, 0.36f, WHITE);
     if (!state.lastCatch.empty()) {
-        text("CATCH", 18, 180, 0.25f, GOLD);
-        text(state.lastCatch.c_str(), 68, 180, 0.25f, WHITE);
+        text("CATCH", 18, 179, 0.32f, GOLD);
+        text(state.lastCatch.c_str(), 70, 179, 0.32f, WHITE);
     }
-    text("A GO", 26, 206, 0.32f, WHITE);
-    text("B SCAN", 92, 206, 0.30f, WHITE);
-    text("X REST", 168, 206, 0.30f, WHITE);
-    text("Y DAY", 253, 206, 0.30f, WHITE);
-    text(saveOk ? "SAVE OK" : "SAVE ERROR", 235, 184, 0.24f, saveOk ? MUTED : GOLD);
+    text("A GO", 25, 204, 0.42f, WHITE);
+    text("B SCAN", 90, 204, 0.39f, WHITE);
+    text("X REST", 166, 204, 0.39f, WHITE);
+    text("Y DAY", 251, 204, 0.39f, WHITE);
+    text(saveOk ? "SAVE OK" : "SAVE ERROR", 220, 184, 0.30f, saveOk ? MUTED : GOLD);
 
     C3D_FrameEnd(0);
 }
