@@ -34,7 +34,15 @@ int main() {
         if (down & KEY_TOUCH) {
             touchPosition touch;
             hidTouchRead(&touch);
-            if (touch.py >= 196) {
+            if (touch.py >= 38 && touch.py < 140) {
+                if (touch.px >= 190 && touch.py < 95) {
+                    game.sendInstruction("OLD LAB");
+                    changed = true;
+                } else if (touch.px >= 220 && touch.py >= 95) {
+                    game.sendInstruction("SHALLOW RUINS");
+                    changed = true;
+                }
+            } else if (touch.py >= 196) {
                 if (touch.px < 80) { game.sendInstruction("OLD LAB"); changed = true; }
                 else if (touch.px < 160) { game.observe(); changed = true; }
                 else if (touch.px < 236) { game.waitAndSavePower(); changed = true; }

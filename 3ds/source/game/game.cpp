@@ -36,6 +36,10 @@ void Game::sendInstruction(const std::string& destination) {
         receive("BEEPER: Battery empty. Wait for a power source." );
         return;
     }
+    if (destination == "SHALLOW RUINS" && state_.animal.empty()) {
+        receive("BEEPER: No safe route. I need a guide for the shallow ruins." );
+        return;
+    }
     state_.battery--;
     state_.destination = destination;
     state_.travelDays = 2;
@@ -85,7 +89,11 @@ void Game::advanceDay() {
             state_.location = state_.destination;
             state_.destination.clear();
             state_.mood = CatMood::Curious;
-            receive("BEEPER: I arrived. An old building is under the water." );
+            if (state_.location == "OLD LAB") {
+                receive("BEEPER: I arrived. An old laboratory is under the water." );
+            } else {
+                receive("BEEPER: I arrived. There are warm lights beneath the ruins." );
+            }
         }
     } else if (state_.mood == CatMood::Tired) {
         state_.mood = CatMood::Calm;
