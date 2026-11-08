@@ -1,6 +1,7 @@
 #include "ui.hpp"
 
 #include <cstdio>
+#include <cmath>
 
 namespace catdrift {
 namespace {
@@ -19,7 +20,7 @@ void rect(float x, float y, float w, float h, u32 c) { C2D_DrawRectSolid(x, y, 0
 void circle(float x, float y, float r, u32 c) { C2D_DrawCircleSolid(x, y, 0.4f, r, c); }
 }
 
-Ui::Ui() : top_(nullptr), bottom_(nullptr), textBuf_(nullptr) {}
+Ui::Ui() : top_(nullptr), bottom_(nullptr), textBuf_(nullptr), time_(0.0f) {}
 
 bool Ui::init() {
     if (!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE)) return false;
@@ -39,6 +40,10 @@ void Ui::text(const char* value, float x, float y, float size, u32 color, u32 fl
 
 void Ui::render(const GameState& state, bool saveOk) {
     char line[128];
+    time_ += 1.0f / 60.0f;
+    const float wave = std::sin(time_ * 1.8f) * 3.0f;
+    const float boatX = std::sin(time_ * 0.75f) * 3.0f;
+    const float catY = std::sin(time_ * 1.5f) * 1.5f;
     C2D_TextBufClear(textBuf_);
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
@@ -55,18 +60,18 @@ void Ui::render(const GameState& state, bool saveOk) {
     circle(126, 62, 17, WHITE);
     rect(100, 62, 44, 12, WHITE);
 
-    rect(136, 147, 122, 20, CAT_DARK);
-    rect(148, 137, 96, 14, SAND);
-    rect(190, 100, 5, 38, CAT_DARK);
-    C2D_DrawTriangle(195, 105, WHITE, 246, 128, WHITE, 195, 128, WHITE, 0.5f);
-    circle(168, 128, 13, CAT_ORANGE);
-    C2D_DrawTriangle(157, 119, CAT_ORANGE, 162, 104, CAT_ORANGE, 168, 120, CAT_ORANGE, 0.5f);
-    C2D_DrawTriangle(168, 120, CAT_ORANGE, 176, 104, CAT_ORANGE, 180, 121, CAT_ORANGE, 0.5f);
-    circle(164, 126, 2, CAT_DARK);
-    circle(173, 126, 2, CAT_DARK);
+    rect(136 + boatX, 147 + wave, 122, 20, CAT_DARK);
+    rect(148 + boatX, 137 + wave, 96, 14, SAND);
+    rect(190 + boatX, 100 + wave, 5, 38, CAT_DARK);
+    C2D_DrawTriangle(195 + boatX, 105 + wave, WHITE, 246 + boatX, 128 + wave, WHITE, 195 + boatX, 128 + wave, WHITE, 0.5f);
+    circle(168 + boatX, 128 + wave + catY, 13, CAT_ORANGE);
+    C2D_DrawTriangle(157 + boatX, 119 + wave + catY, CAT_ORANGE, 162 + boatX, 104 + wave + catY, CAT_ORANGE, 168 + boatX, 120 + wave + catY, CAT_ORANGE, 0.5f);
+    C2D_DrawTriangle(168 + boatX, 120 + wave + catY, CAT_ORANGE, 176 + boatX, 104 + wave + catY, CAT_ORANGE, 180 + boatX, 121 + wave + catY, CAT_ORANGE, 0.5f);
+    circle(164 + boatX, 126 + wave + catY, 2, CAT_DARK);
+    circle(173 + boatX, 126 + wave + catY, 2, CAT_DARK);
     rect(134, 166, 128, 4, WHITE);
-    rect(150, 183, 74, 3, WHITE);
-    rect(250, 192, 36, 3, WHITE);
+    rect(150 + wave, 183, 74, 3, WHITE);
+    rect(250 - wave, 192, 36, 3, WHITE);
 
     rect(12, 202, 376, 26, PANEL);
     text("PLACE", 20, 208, 0.38f, YELLOW);
@@ -91,9 +96,16 @@ void Ui::render(const GameState& state, bool saveOk) {
     rect(12, 144, 296, 52, PANEL);
     text("BEEPER", 20, 151, 0.38f, YELLOW);
     text(state.message.c_str(), 20, 168, 0.34f, WHITE, C2D_WordWrap);
-    rect(12, 204, 190, 24, PANEL);
-    text("A GO   B SCAN   X REST   Y DAY", 18, 211, 0.29f, WHITE);
-    text(saveOk ? "SAVE OK" : "SAVE ERROR", 225, 211, 0.31f, saveOk ? SEA_DARK : CAT_DARK);
+    const u32 button = C2D_Color32(0x2B, 0x5D, 0x70, 0xFF);
+    rect(8, 204, 72, 26, button);
+    rect(84, 204, 72, 26, button);
+    rect(160, 204, 72, 26, button);
+    rect(236, 204, 76, 26, button);
+    text("A GO", 27, 211, 0.34f, WHITE);
+    text("B SCAN", 94, 211, 0.32f, WHITE);
+    text("X REST", 169, 211, 0.32f, WHITE);
+    text("Y DAY", 253, 211, 0.32f, WHITE);
+    text(saveOk ? "SAVE OK" : "SAVE ERROR", 235, 187, 0.31f, saveOk ? SEA_DARK : CAT_DARK);
     C3D_FrameEnd(0);
 }
 

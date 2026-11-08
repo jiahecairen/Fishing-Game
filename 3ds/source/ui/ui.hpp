@@ -18,6 +18,7 @@ private:
     C3D_RenderTarget* top_;
     C3D_RenderTarget* bottom_;
     C2D_TextBuf textBuf_;
+    float time_;
     void text(const char* value, float x, float y, float size, u32 color, u32 flags = 0);
 };
 

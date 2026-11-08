@@ -26,6 +26,16 @@ int main() {
         if (down & KEY_B) { game.observe(); changed = true; }
         if (down & KEY_X) { game.waitAndSavePower(); changed = true; }
         if (down & KEY_Y) { game.advanceDay(); changed = true; }
+        if (down & KEY_TOUCH) {
+            touchPosition touch;
+            hidTouchRead(&touch);
+            if (touch.py >= 204) {
+                if (touch.px < 80) { game.sendInstruction("OLD LAB"); changed = true; }
+                else if (touch.px < 160) { game.observe(); changed = true; }
+                else if (touch.px < 236) { game.waitAndSavePower(); changed = true; }
+                else { game.advanceDay(); changed = true; }
+            }
+        }
         if (changed) saveOk = catdrift::Save::write(game.state());
 
         ui.render(game.state(), saveOk);
