@@ -9,6 +9,10 @@ const GameState& Game::state() const {
     return state_;
 }
 
+GameState& Game::mutableState() {
+    return state_;
+}
+
 void Game::receive(const std::string& message) {
     state_.message = message;
     state_.mood = CatMood::Curious;

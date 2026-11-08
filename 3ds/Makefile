@@ -10,7 +10,7 @@ include $(DEVKITARM)/3ds_rules
 
 TARGET := cat-drift
 BUILD := build
-SOURCES := source source/game
+SOURCES := source source/game source/save
 DATA := data
 INCLUDES := include
 GRAPHICS := gfx
@@ -47,7 +47,7 @@ export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 export OFILES_BIN := $(addsuffix .o,$(BINFILES))
 export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
-export INCLUDE := $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) $(foreach dir,$(LIBDIRS),-I$(dir)/include) -I$(CURDIR)/$(BUILD)
+export INCLUDE := -I$(CURDIR)/source $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) $(foreach dir,$(LIBDIRS),-I$(dir)/include) -I$(CURDIR)/$(BUILD)
 export LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 export _3DSXDEPS := $(OUTPUT).smdh
 export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh

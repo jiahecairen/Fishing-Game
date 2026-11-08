@@ -27,6 +27,7 @@ public:
     Game();
 
     const GameState& state() const;
+    GameState& mutableState();
     void sendInstruction(const std::string& destination);
     void observe();
     void waitAndSavePower();
