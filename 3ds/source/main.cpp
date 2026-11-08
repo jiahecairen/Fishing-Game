@@ -34,7 +34,7 @@ int main() {
         if (down & KEY_TOUCH) {
             touchPosition touch;
             hidTouchRead(&touch);
-            if (touch.py >= 204) {
+            if (touch.py >= 196) {
                 if (touch.px < 80) { game.sendInstruction("OLD LAB"); changed = true; }
                 else if (touch.px < 160) { game.observe(); changed = true; }
                 else if (touch.px < 236) { game.waitAndSavePower(); changed = true; }

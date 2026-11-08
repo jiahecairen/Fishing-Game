@@ -35,6 +35,7 @@ bool Ui::init() {
 void Ui::text(const char* value, float x, float y, float size, u32 color, u32 flags) {
     C2D_Text item;
     C2D_TextParse(&item, textBuf_, value);
+    C2D_TextOptimize(&item);
     C2D_DrawText(&item, flags | C2D_WithColor, x, y, 0.1f, size, size, color);
 }
 
@@ -67,11 +68,14 @@ void Ui::render(const GameState& state, bool saveOk) {
     rect(148 + boatX, 137 + wave, 96, 14, SAND);
     rect(190 + boatX, 100 + wave, 5, 38, CAT_DARK);
     C2D_DrawTriangle(195 + boatX, 105 + wave, WHITE, 246 + boatX, 128 + wave, WHITE, 195 + boatX, 128 + wave, WHITE, 0.5f);
-    circle(168 + boatX, 128 + wave + catY, 13, CAT_ORANGE);
-    C2D_DrawTriangle(157 + boatX, 119 + wave + catY, CAT_ORANGE, 162 + boatX, 104 + wave + catY, CAT_ORANGE, 168 + boatX, 120 + wave + catY, CAT_ORANGE, 0.5f);
-    C2D_DrawTriangle(168 + boatX, 120 + wave + catY, CAT_ORANGE, 176 + boatX, 104 + wave + catY, CAT_ORANGE, 180 + boatX, 121 + wave + catY, CAT_ORANGE, 0.5f);
-    circle(164 + boatX, 126 + wave + catY, 2, CAT_DARK);
-    circle(173 + boatX, 126 + wave + catY, 2, CAT_DARK);
+    // A deliberately oversized pixel cat so it remains readable on the small screen.
+    rect(151 + boatX, 108 + wave + catY, 35, 29, CAT_ORANGE);
+    rect(156 + boatX, 99 + wave + catY, 28, 25, CAT_ORANGE);
+    C2D_DrawTriangle(156 + boatX, 105 + wave + catY, CAT_ORANGE, 159 + boatX, 91 + wave + catY, CAT_ORANGE, 166 + boatX, 104 + wave + catY, CAT_ORANGE, 0.5f);
+    C2D_DrawTriangle(174 + boatX, 104 + wave + catY, CAT_ORANGE, 181 + boatX, 91 + wave + catY, CAT_ORANGE, 184 + boatX, 106 + wave + catY, CAT_ORANGE, 0.5f);
+    rect(162 + boatX, 108 + wave + catY, 4, 4, CAT_DARK);
+    rect(175 + boatX, 108 + wave + catY, 4, 4, CAT_DARK);
+    rect(168 + boatX, 117 + wave + catY, 5, 3, CAT_DARK);
     // The cat is always fishing when it is not travelling.
     if (state.destination.empty()) {
         const float bobX = 285.0f + std::sin(time_ * 1.1f) * 4.0f;
@@ -123,15 +127,15 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("BEEPER", 20, 151, 0.38f, YELLOW);
     text(state.message.c_str(), 20, 168, 0.34f, WHITE, C2D_WordWrap);
     const u32 button = C2D_Color32(0x2B, 0x5D, 0x70, 0xFF);
-    rect(8, 204, 72, 26, button);
-    rect(84, 204, 72, 26, button);
-    rect(160, 204, 72, 26, button);
-    rect(236, 204, 76, 26, button);
-    text("A GO", 27, 211, 0.34f, WHITE);
-    text("B SCAN", 94, 211, 0.32f, WHITE);
-    text("X REST", 169, 211, 0.32f, WHITE);
-    text("Y DAY", 253, 211, 0.32f, WHITE);
-    text(saveOk ? "SAVE OK" : "SAVE ERROR", 235, 187, 0.31f, saveOk ? SEA_DARK : CAT_DARK);
+    rect(8, 196, 72, 30, button);
+    rect(84, 196, 72, 30, button);
+    rect(160, 196, 72, 30, button);
+    rect(236, 196, 76, 30, button);
+    text("A GO", 27, 201, 0.34f, WHITE);
+    text("B SCAN", 94, 201, 0.32f, WHITE);
+    text("X REST", 169, 201, 0.32f, WHITE);
+    text("Y DAY", 253, 201, 0.32f, WHITE);
+    text(saveOk ? "SAVE OK" : "SAVE ERROR", 235, 181, 0.31f, saveOk ? SEA_DARK : CAT_DARK);
     C3D_FrameEnd(0);
 }
 
