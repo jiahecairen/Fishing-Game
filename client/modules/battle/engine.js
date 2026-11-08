@@ -213,18 +213,18 @@ const Battle = {
     const S = this.S, F = B.foe, fx = Hero.effects(), M = MONSTERS[F.id];
     B.over = true; B.result = 'win';
     S.advStats.wins++; S.advStats.kills++;
-    const exp = Math.round(F.lv * 7 * (F.boss ? 5 : 1) * (B.ctx.expMul || 1));
-    const coins = Math.round(F.lv * rand(6, 10) * (F.boss ? 5 : 1) * (1 + (fx.gold || 0)));
+    const exp = Math.round(F.lv * 7 * (F.boss ? 5 : 1) * (B.ctx.expMul || 1) * CF.tune('battle.expMul', 1));
+    const coins = Math.round(F.lv * rand(6, 10) * (F.boss ? 5 : 1) * (1 + (fx.gold || 0)) * CF.tune('battle.coinMul', 1));
     Game.gainExp(exp); Game.addCoins(coins);
     let msg = `* 你赢了！获得 ${exp} 经验和 🪙${coins}。`;
     const tier = B.ctx.tier || Game.progressTier();
-    if (!F.boss && Math.random() < 0.22) { const g = Hero.newGear(tier, 1); if (Hero.addGear(g, true)) { msg += ` 掉落了【${gearName(g)}】！`; B.drop = g; } }
-    if (!F.boss && Math.random() < 0.04 && Inv.kinds.treasure) { Inv.give('treasure', 'key', 1); msg += ' 掉落了一把钥匙！'; }
+    if (!F.boss && Math.random() < CF.tune('battle.gearDrop', 0.22)) { const g = Hero.newGear(tier, 1); if (Hero.addGear(g, true)) { msg += ` 掉落了【${gearName(g)}】！`; B.drop = g; } }
+    if (!F.boss && Math.random() < CF.tune('battle.keyDrop', 0.04) && Inv.kinds.treasure) { Inv.give('treasure', 'key', 1); msg += ' 掉落了一把钥匙！'; }
     if (M.drop && Math.random() < M.drop[1] && Inv.kinds.treasure) { Inv.give('treasure', M.drop[0], 1); msg += ` 掉落了【${Inv.needName('treasure', M.drop[0])}】！`; }
-    if (M.unique && Math.random() < M.unique[1] && !Hero.ownsUnique(M.unique[0])) {
+    if (M.unique && Math.random() < M.unique[1] * CF.tune('battle.uniqueMul', 1) && !Hero.ownsUnique(M.unique[0])) {
       const g = Hero.giveUnique(M.unique[0], true); if (g) { msg += ` ✨掉落了隐藏装备【${gearName(g)}】！`; B.drop = g; }
     }
-    if (M.mats && Math.random() < M.mats[1]) { Inv.give('mat', M.mats[0], M.mats[2]); msg += ` 获得素材【${Inv.needName('mat', M.mats[0])}×${M.mats[2]}】`; }
+    if (M.mats && Math.random() < M.mats[1] * CF.tune('battle.matMul', 1)) { Inv.give('mat', M.mats[0], M.mats[2]); msg += ` 获得素材【${Inv.needName('mat', M.mats[0])}×${M.mats[2]}】`; }
     if (M.onDefeat) M.onDefeat(B, this.api(B));
     B.reward = { exp, coins, gear: !!B.drop };
     B.log.push(msg);

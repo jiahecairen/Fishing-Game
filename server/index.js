@@ -20,7 +20,14 @@ config.clientDir = path.resolve(ROOT, config.clientDir);
 
 const store = new Store(config.dataDir);
 const app = createApp({ maxBodyKB: config.maxSaveKB + 64 });
-const ctx = { config, store, log, app, version: require('./package.json').version };
+const ctx = { config, store, log, app, version: require('./package.json').version, startedAt: Date.now() };
+
+// 运行时设置：可以在后台管理页面里改，改完马上生效、重启也记得（存在 data/settings.json，没有就用 config.json 里的值）
+ctx.settings = Object.assign({ maintenance: false, maintenanceMsg: '服务器正在维护，请稍后再来～', allowRegister: config.allowRegister !== false, devCheats: !!config.devCheats },
+  store.table('settings', () => ({})));
+ctx.saveSettings = () => { Object.assign(store.table('settings', () => ({})), ctx.settings); store.touch('settings'); };
+// 退出进程：code 42 = 重启（启动服务器.command 看到 42 会自动再启动一次），0 = 关闭
+ctx.exit = code => { log.info(code === 42 ? '后台要求重启服务器…' : '后台要求关闭服务器…'); store.flushAll(); setTimeout(() => process.exit(code), 300); };
 
 for (const name of require('./modules')) {
   const mod = require('./modules/' + name);
@@ -28,10 +35,12 @@ for (const name of require('./modules')) {
   log.info(`模块已加载：${mod.name || name}`);
 }
 app.static(config.clientDir);
+app.static(path.join(ROOT, 'admin'), '/admin/'); // 后台管理页面
 
 const server = app.listen(config.port, config.host, () => {
   log.info(`🐱 小猫钓鱼服务器已启动：http://localhost:${config.port}`);
   log.info(`   存档目录：${config.dataDir}`);
+  log.info(`   后台管理：http://localhost:${config.port}/admin/`);
   log.info('   按 Ctrl+C 停止服务器');
   selfCheck();
 });

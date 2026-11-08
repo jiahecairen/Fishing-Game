@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小猫钓鱼 · 后台管理</title>
+<link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<!-- 后台管理页面：由服务器的 admin / tuning / mail 模块提供数据。页面本身只是这三个文件（index.html、admin.css、admin.js）。 -->
+<div id="login" class="hidden"></div>
+
+<div id="app" class="hidden">
+  <aside id="side">
+    <div class="brand"><img src="/assets/icon.png" alt=""><div><b>小猫钓鱼</b><small>后台管理</small></div></div>
+    <nav id="tabs">
+      <button data-tab="overview">📊 概览</button>
+      <button data-tab="tuning">🎛️ 数值调整</button>
+      <button data-tab="gear">🛡️ 装备</button>
+      <button data-tab="players">🐱 玩家</button>
+      <button data-tab="server">🖥️ 服务器</button>
+    </nav>
+    <div class="side-foot"><span id="srv-dot" class="dot"></span><span id="srv-state">—</span><button id="logout" class="link">退出后台</button></div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<div id="modal" class="hidden"><div class="mbox"><header><h3 id="m-title"></h3><button class="x" data-close>✕</button></header><div id="m-body"></div><footer id="m-foot"></footer></div></div>
+<div id="toasts"></div>
+
+<script src="/assets/icons.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

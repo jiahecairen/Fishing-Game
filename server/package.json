@@ -1,6 +1,6 @@
 {
   "name": "catfishing-server",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": true,
   "description": "小猫钓鱼 · 游戏服务器（注册、登录、云存档）。零依赖，只需要 Node.js 18+。",
   "main": "index.js",

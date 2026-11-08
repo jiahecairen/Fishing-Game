@@ -64,7 +64,8 @@ CF.modes = {
     if (CF.first('mode.blocked', d)) return; // 战斗 / 剧情 / 事件进行中
     d.tick(dt);
   },
-  render(dt) { const d = this.cur(); if (d.render) d.render(dt, CF.view); },
+  // 钩子 view.render(dt, view)：返回 true 表示「这一帧我画了」，例如桌面宠物模式整个接管画面
+  render(dt) { if (CF.first('view.render', dt, CF.view)) return; const d = this.cur(); if (d.render) d.render(dt, CF.view); },
   // 离线结算时，非默认模式先消耗时间（例如航行还没到岸）
   offline(ctx) { const d = this.cur(); if (this.busy() && d.offline) d.offline(ctx); },
 };

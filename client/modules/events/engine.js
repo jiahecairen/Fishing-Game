@@ -94,7 +94,7 @@ const Events = {
     }
     if (CF.modes.busy() || Battle.battle || Story.active) return;
     this.timer -= dt;
-    if (this.timer <= 0) { this.timer = rand(150, 300); this.trigger('fish'); }
+    if (this.timer <= 0) { this.timer = rand(CF.tune('events.min', 150), Math.max(CF.tune('events.min', 150), CF.tune('events.max', 300))); this.trigger('fish'); }
   },
 };
 

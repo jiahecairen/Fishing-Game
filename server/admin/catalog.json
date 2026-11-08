@@ -1,0 +1,491 @@
+{
+ "kinds": {
+  "bait": [
+   {
+    "id": "worm",
+    "name": "蚯蚓"
+   },
+   {
+    "id": "shrimp",
+    "name": "鲜虾"
+   },
+   {
+    "id": "lure",
+    "name": "亮片拟饵"
+   },
+   {
+    "id": "catnip",
+    "name": "秘制猫薄荷饵"
+   }
+  ],
+  "item": [
+   {
+    "id": "luckbell",
+    "name": "幸运猫铃"
+   },
+   {
+    "id": "raincharm",
+    "name": "祈雨符"
+   },
+   {
+    "id": "sundoll",
+    "name": "晴天娃娃"
+   },
+   {
+    "id": "fogbottle",
+    "name": "雾之瓶"
+   },
+   {
+    "id": "glowfloat",
+    "name": "夜光浮漂"
+   },
+   {
+    "id": "autostore",
+    "name": "自动收纳盒"
+   },
+   {
+    "id": "luckycat",
+    "name": "招财猫"
+   }
+  ],
+  "treasure": [
+   {
+    "id": "key",
+    "name": "生锈的钥匙"
+   },
+   {
+    "id": "chest_wood",
+    "name": "木制宝箱"
+   },
+   {
+    "id": "chest_silver",
+    "name": "白银宝箱"
+   },
+   {
+    "id": "chest_gold",
+    "name": "黄金宝箱"
+   },
+   {
+    "id": "map",
+    "name": "藏宝图"
+   },
+   {
+    "id": "mapPiece",
+    "name": "海盗地图碎片"
+   }
+  ],
+  "mat": [
+   {
+    "id": "oldwood",
+    "name": "老船木"
+   },
+   {
+    "id": "turtleshell",
+    "name": "龟甲碎片"
+   },
+   {
+    "id": "pearl",
+    "name": "潮汐珍珠"
+   },
+   {
+    "id": "stardust",
+    "name": "星尘"
+   },
+   {
+    "id": "icecore",
+    "name": "冰晶核"
+   },
+   {
+    "id": "whalebone",
+    "name": "鲸骨碎片"
+   },
+   {
+    "id": "piratecoin",
+    "name": "海盗金币"
+   }
+  ],
+  "dish": [
+   {
+    "id": "grill",
+    "name": "烤鱼串"
+   },
+   {
+    "id": "soup",
+    "name": "鲜鱼汤"
+   },
+   {
+    "id": "sashimi",
+    "name": "刺身拼盘"
+   },
+   {
+    "id": "sweet",
+    "name": "糖醋鲤鱼"
+   },
+   {
+    "id": "kabayaki",
+    "name": "蒲烧鳗鱼"
+   },
+   {
+    "id": "sanma",
+    "name": "盐烤秋刀鱼"
+   },
+   {
+    "id": "bamboo",
+    "name": "竹筒鱼饭"
+   },
+   {
+    "id": "sushi",
+    "name": "锦鲤寿司"
+   },
+   {
+    "id": "stew",
+    "name": "深渊炖菜"
+   },
+   {
+    "id": "crabpot",
+    "name": "帝王蟹火锅"
+   }
+  ]
+ },
+ "uniques": [
+  {
+   "id": "u_rod",
+   "name": "奶奶的鱼竿",
+   "slot": "weapon",
+   "tier": 5,
+   "stats": {
+    "atk": 100,
+    "crit": 0.08,
+    "luck": 0.1
+   },
+   "effect": "double",
+   "eff": 0.18,
+   "edesc": "18% 几率追加一次攻击",
+   "src": "梦之湖·花的回忆"
+  },
+  {
+   "id": "u_hat",
+   "name": "花的草帽",
+   "slot": "hat",
+   "tier": 5,
+   "stats": {
+    "maxHp": 170,
+    "def": 22
+   },
+   "effect": "apStart",
+   "eff": 2,
+   "edesc": "战斗开始时行动点 +2",
+   "src": "梦之湖·花的回忆（再次通关）"
+  },
+  {
+   "id": "u_scale",
+   "name": "泡泡的鳞片",
+   "slot": "charm",
+   "tier": 3,
+   "stats": {
+    "maxHp": 70,
+    "crit": 0.05,
+    "luck": 0.15
+   },
+   "effect": "regen",
+   "eff": 0.04,
+   "edesc": "每回合回复 4% 生命",
+   "src": "……泡泡好像有话想说"
+  },
+  {
+   "id": "u_cheese",
+   "name": "鼠王的奶酪王冠",
+   "slot": "hat",
+   "tier": 1,
+   "stats": {
+    "maxHp": 60,
+    "def": 6
+   },
+   "effect": "gold",
+   "eff": 0.3,
+   "edesc": "战斗获得的金币 +30%",
+   "src": "鼠王·芝士大人（低概率掉落）"
+  },
+  {
+   "id": "u_shell",
+   "name": "将军的贝壳",
+   "slot": "armor",
+   "tier": 3,
+   "stats": {
+    "maxHp": 280,
+    "def": 30
+   },
+   "effect": "thorns",
+   "eff": 0.2,
+   "edesc": "受到攻击时反弹 20% 伤害",
+   "src": "螃蟹将军（低概率掉落）"
+  },
+  {
+   "id": "u_ice",
+   "name": "女王的冰晶",
+   "slot": "charm",
+   "tier": 4,
+   "stats": {
+    "maxHp": 100,
+    "crit": 0.08
+   },
+   "effect": "freeze",
+   "eff": 0.15,
+   "edesc": "攻击有 15% 几率冻结敌人一回合",
+   "src": "冰晶女王（低概率掉落）"
+  },
+  {
+   "id": "u_tear",
+   "name": "墨之泪",
+   "slot": "charm",
+   "tier": 5,
+   "stats": {
+    "maxHp": 160,
+    "crit": 0.1,
+    "luck": 0.25
+   },
+   "effect": "rage",
+   "eff": 0.4,
+   "edesc": "生命低于 40% 时伤害 +40%",
+   "src": "和墨做朋友"
+  },
+  {
+   "id": "u_blade",
+   "name": "独眼船长的弯刀",
+   "slot": "weapon",
+   "tier": 4,
+   "stats": {
+    "atk": 72,
+    "crit": 0.1
+   },
+   "effect": "lifesteal",
+   "eff": 0.2,
+   "edesc": "造成伤害的 20% 转化为生命",
+   "src": "海盗湾·独眼喵的宝窟"
+  },
+  {
+   "id": "u_pirhat",
+   "name": "海盗船长帽",
+   "slot": "hat",
+   "tier": 4,
+   "stats": {
+    "maxHp": 130,
+    "def": 14,
+    "crit": 0.05
+   },
+   "effect": "treasure",
+   "eff": 0.3,
+   "edesc": "钓到宝藏的概率 +30%",
+   "src": "独眼船长（概率掉落）"
+  },
+  {
+   "id": "u_moon",
+   "name": "月光猫靴",
+   "slot": "boots",
+   "tier": 4,
+   "stats": {
+    "spd": 18,
+    "def": 10
+   },
+   "effect": "dodge",
+   "eff": 0.12,
+   "edesc": "12% 几率闪避攻击",
+   "src": "对着流星许愿"
+  },
+  {
+   "id": "u_koi",
+   "name": "七彩锦鲤剑",
+   "slot": "weapon",
+   "tier": 5,
+   "stats": {
+    "atk": 84,
+    "crit": 0.2
+   },
+   "effect": "critDmg",
+   "eff": 0.6,
+   "edesc": "暴击伤害 +60%",
+   "src": "锻造配方"
+  },
+  {
+   "id": "sa_w",
+   "name": "渔夫的鱼叉",
+   "slot": "weapon",
+   "tier": 4,
+   "stats": {
+    "atk": 80,
+    "crit": 0.06,
+    "luck": 0.1
+   },
+   "src": "任务「渔夫之魂」"
+  },
+  {
+   "id": "sa_h",
+   "name": "渔夫的斗笠",
+   "slot": "hat",
+   "tier": 3,
+   "stats": {
+    "maxHp": 140,
+    "def": 16,
+    "luck": 0.1
+   },
+   "src": "任务「渔夫之魂」"
+  },
+  {
+   "id": "sa_a",
+   "name": "渔夫的蓑衣",
+   "slot": "armor",
+   "tier": 4,
+   "stats": {
+    "maxHp": 320,
+    "def": 36
+   },
+   "src": "任务「渔夫之魂」"
+  },
+  {
+   "id": "st_b",
+   "name": "深潮战靴",
+   "slot": "boots",
+   "tier": 4,
+   "stats": {
+    "spd": 16,
+    "def": 18
+   },
+   "src": "任务「深海潮汐」"
+  },
+  {
+   "id": "st_h",
+   "name": "深潮之冠",
+   "slot": "hat",
+   "tier": 4,
+   "stats": {
+    "maxHp": 200,
+    "def": 24
+   },
+   "src": "任务「深海潮汐」"
+  },
+  {
+   "id": "st_a",
+   "name": "深潮铠甲",
+   "slot": "armor",
+   "tier": 5,
+   "stats": {
+    "maxHp": 460,
+    "def": 52
+   },
+   "src": "任务「深海潮汐」"
+  },
+  {
+   "id": "ss_c",
+   "name": "星落吊坠",
+   "slot": "charm",
+   "tier": 5,
+   "stats": {
+    "maxHp": 180,
+    "crit": 0.14,
+    "luck": 0.15
+   },
+   "src": "任务「星落」"
+  },
+  {
+   "id": "ss_b",
+   "name": "星落之靴",
+   "slot": "boots",
+   "tier": 5,
+   "stats": {
+    "spd": 24,
+    "def": 20
+   },
+   "src": "任务「星落」"
+  },
+  {
+   "id": "ss_w",
+   "name": "星落之刃",
+   "slot": "weapon",
+   "tier": 5,
+   "stats": {
+    "atk": 120,
+    "crit": 0.12
+   },
+   "src": "任务「星落」"
+  }
+ ],
+ "slots": {
+  "weapon": "武器",
+  "hat": "头饰",
+  "armor": "护甲",
+  "boots": "靴子",
+  "charm": "饰品"
+ },
+ "bases": {
+  "weapon": [
+   "小树枝",
+   "铁鱼叉",
+   "珊瑚之刃",
+   "冰霜爪套",
+   "深渊三叉戟"
+  ],
+  "hat": [
+   "草编帽",
+   "渔夫雨帽",
+   "潜水头盔",
+   "雪绒帽",
+   "鲸骨王冠"
+  ],
+  "armor": [
+   "草编背心",
+   "皮革雨衣",
+   "贝壳铠甲",
+   "雪熊斗篷",
+   "鲸骨战甲"
+  ],
+  "boots": [
+   "草鞋",
+   "胶皮雨靴",
+   "珊瑚短靴",
+   "雪地长靴",
+   "深渊行者靴"
+  ],
+  "charm": [
+   "铃铛项圈",
+   "幸运鱼鳞",
+   "珍珠项链",
+   "极光吊坠",
+   "星辰怀表"
+  ]
+ },
+ "quality": [
+  {
+   "id": "q1",
+   "name": "普通",
+   "color": "#a39a86"
+  },
+  {
+   "id": "q2",
+   "name": "精良",
+   "color": "#4caf50"
+  },
+  {
+   "id": "q3",
+   "name": "稀有",
+   "color": "#2a9fd8"
+  },
+  {
+   "id": "q4",
+   "name": "史诗",
+   "color": "#a958c9"
+  },
+  {
+   "id": "q5",
+   "name": "传说",
+   "color": "#ff8f00"
+  }
+ ],
+ "statNames": {
+  "atk": "攻击",
+  "def": "防御",
+  "maxHp": "生命",
+  "spd": "速度",
+  "crit": "暴击",
+  "luck": "钓鱼幸运"
+ }
+}

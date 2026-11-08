@@ -60,7 +60,7 @@ CF.start = async function () {
 // 离线结算：先结算与模式无关的（寄卖行…），再让当前模式（航海/副本）消耗时间，最后钓鱼用掉剩下的
 CF.offline = function (seconds) {
   if (!(seconds >= 30)) return null;
-  seconds = Math.min(seconds, OFFLINE_CAP_SEC);
+  seconds = Math.min(seconds, CF.tune('econ.offlineHours', OFFLINE_CAP_SEC / 3600) * 3600);
   const ctx = { seconds, left: seconds, report: { seconds } };
   const steps = CF.parts().filter(m => m.offline).map(m => ({ p: m.offlinePriority || 50, fn: c => m.offline(c), id: m.id }));
   steps.push({ p: 50, fn: c => CF.modes.offline(c), id: 'modes' });
