@@ -143,6 +143,37 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("X REST", 169, 201, 0.32f, WHITE);
     text("Y DAY", 253, 201, 0.32f, WHITE);
     text(saveOk ? "SAVE OK" : "SAVE ERROR", 235, 181, 0.31f, saveOk ? SEA_DARK : CAT_DARK);
+
+    // Text overlay pass: keep all labels above the shape layer.
+    C2D_SceneBegin(top_);
+    std::snprintf(line, sizeof(line), "DAY %d", state.day);
+    text("CAT DRIFT", 14, 7, 0.65f, WHITE);
+    text(line, 320, 8, 0.48f, YELLOW);
+    std::snprintf(line, sizeof(line), "BEEP %d", state.battery);
+    text(line, 250, 8, 0.42f, WHITE);
+    text("CAT IS LIVING...", 14, 38, 0.34f, SEA_DARK);
+    text(state.location.c_str(), 72, 208, 0.38f, WHITE);
+    text(state.weather.c_str(), 170, 208, 0.35f, rain ? YELLOW : WHITE);
+    text(state.lostContact ? "SIGNAL LOST" : "SIGNAL ONLINE", 270, 208, 0.35f, state.lostContact ? YELLOW : WHITE);
+    text(state.destination.empty() ? "FISHING" : "SAILING", 278, 102, 0.32f, WHITE);
+
+    C2D_SceneBegin(bottom_);
+    text("SATELLITE MAP", 12, 7, 0.52f, WHITE);
+    text("DRIFT SEA", 50, 104, 0.35f, WHITE);
+    text("OLD LAB", 199, 58, 0.34f, INK);
+    text("RUINS", 230, 121, 0.34f, INK);
+    text(state.animal.empty() ? "ANIMAL LINK: NONE" : "ANIMAL LINK: GULL", 18, 134, 0.30f, SEA_DARK);
+    text("BEEPER", 20, 151, 0.38f, YELLOW);
+    text(state.message.c_str(), 20, 168, 0.34f, WHITE, C2D_WordWrap);
+    if (!state.lastCatch.empty()) {
+        text("LAST CATCH", 20, 184, 0.28f, YELLOW);
+        text(state.lastCatch.c_str(), 94, 184, 0.28f, WHITE);
+    }
+    text("A GO", 27, 201, 0.34f, WHITE);
+    text("B SCAN", 94, 201, 0.32f, WHITE);
+    text("X REST", 169, 201, 0.32f, WHITE);
+    text("Y DAY", 253, 201, 0.32f, WHITE);
+    text(saveOk ? "SAVE OK" : "SAVE ERROR", 235, 181, 0.31f, saveOk ? SEA_DARK : CAT_DARK);
     C3D_FrameEnd(0);
 }
 
