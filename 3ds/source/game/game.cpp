@@ -2,7 +2,7 @@
 
 namespace catdrift {
 
-Game::Game() : state_{1, 4, "DRIFT SEA", "", "CLEAR", "", CatMood::Calm,
+Game::Game() : state_{1, 4, "DRIFT SEA", "", "CLEAR", "", "", CatMood::Calm,
     "BEEPER: This is Cat. I am alive. The sea is quiet.", false, 0}, idleSeconds_(0.0f) {}
 
 const GameState& Game::state() const {
@@ -99,9 +99,14 @@ void Game::advanceDay() {
         state_.mood = CatMood::Calm;
         receive("BEEPER: Good morning. I fixed the fishing rod." );
     } else if (state_.day % 3 == 0) {
+        state_.lastCatch = "SILVER FISH";
         receive("BEEPER: I caught a silver fish. It was looking at the stars." );
     } else if (state_.day % 3 == 1) {
-        receive("BEEPER: A gull visited the boat today. It knew the word 'north'." );
+        state_.lastCatch = "JELLYFISH";
+        receive("BEEPER: I caught a jellyfish. It glowed under the boat." );
+    } else {
+        state_.lastCatch = "SEA BOTTLE";
+        receive("BEEPER: I found a bottle in the net. There is a map inside." );
     }
     if (state_.day >= 4 && state_.animal.empty()) {
         state_.animal = "GULL";

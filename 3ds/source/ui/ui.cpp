@@ -127,6 +127,10 @@ void Ui::render(const GameState& state, bool saveOk) {
     rect(12, 144, 296, 52, PANEL);
     text("BEEPER", 20, 151, 0.38f, YELLOW);
     text(state.message.c_str(), 20, 168, 0.34f, WHITE, C2D_WordWrap);
+    if (!state.lastCatch.empty()) {
+        text("LAST CATCH", 20, 184, 0.28f, YELLOW);
+        text(state.lastCatch.c_str(), 94, 184, 0.28f, WHITE);
+    }
     const u32 button = C2D_Color32(0x2B, 0x5D, 0x70, 0xFF);
     rect(8, 196, 72, 30, button);
     rect(84, 196, 72, 30, button);
