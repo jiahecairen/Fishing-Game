@@ -92,7 +92,9 @@ void Game::advanceDay() {
             if (state_.location == "OLD LAB") {
                 receive("BEEPER: I arrived. An old laboratory is under the water." );
             } else {
+                state_.animal = "DOLPHIN";
                 receive("BEEPER: I arrived. There are warm lights beneath the ruins." );
+                receive("DOLPHIN: The warm current leads to a buried relay station." );
             }
         }
     } else if (state_.mood == CatMood::Tired) {

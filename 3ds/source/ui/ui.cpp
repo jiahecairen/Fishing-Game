@@ -45,6 +45,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     char line[128];
     std::string compactMessage = state.message;
     if (compactMessage.size() > 34) compactMessage = compactMessage.substr(0, 31) + "...";
+    std::string animalLabel = state.animal.empty() ? "ANIMAL LINK: NONE" : "ANIMAL LINK: " + state.animal;
     time_ += 1.0f / 60.0f;
     const float wave = std::sin(time_ * 1.8f) * 3.0f;
     const float boatX = std::sin(time_ * 0.75f) * 3.0f;
@@ -127,7 +128,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("DRIFT SEA", 50, 104, 0.35f, WHITE);
     text("OLD LAB", 199, 58, 0.34f, INK);
     text("RUINS", 230, 121, 0.34f, INK);
-    text(state.animal.empty() ? "ANIMAL LINK: NONE" : "ANIMAL LINK: GULL", 18, 134, 0.30f, SEA_DARK);
+    text(animalLabel.c_str(), 18, 134, 0.30f, SEA_DARK);
     if (!state.destination.empty()) text("ROUTE ACTIVE", 105, 38, 0.32f, SEA_DARK);
 
     rect(12, 144, 296, 52, PANEL);
@@ -166,7 +167,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("DRIFT SEA", 50, 104, 0.35f, WHITE);
     text("OLD LAB", 199, 58, 0.34f, INK);
     text("RUINS", 230, 121, 0.34f, INK);
-    text(state.animal.empty() ? "ANIMAL LINK: NONE" : "ANIMAL LINK: GULL", 18, 134, 0.30f, SEA_DARK);
+    text(animalLabel.c_str(), 18, 134, 0.30f, SEA_DARK);
     text("BEEPER", 20, 151, 0.38f, YELLOW);
     text(compactMessage.c_str(), 20, 168, 0.28f, WHITE);
     if (!state.lastCatch.empty()) {
