@@ -36,7 +36,8 @@ void Ui::text(const char* value, float x, float y, float size, u32 color, u32 fl
     C2D_Text item;
     C2D_TextParse(&item, textBuf_, value);
     C2D_TextOptimize(&item);
-    C2D_DrawText(&item, flags | C2D_WithColor, x, y, 0.1f, size, size, color);
+    // Keep text in front of panels and map shapes (which use depth 0.5).
+    C2D_DrawText(&item, flags | C2D_WithColor, x, y, 0.9f, size, size, color);
 }
 
 void Ui::render(const GameState& state, bool saveOk) {
