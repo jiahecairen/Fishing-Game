@@ -77,6 +77,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("PLACE", 20, 208, 0.38f, YELLOW);
     text(state.location.c_str(), 72, 208, 0.38f, WHITE);
     text(state.lostContact ? "SIGNAL LOST" : "SIGNAL ONLINE", 270, 208, 0.35f, state.lostContact ? YELLOW : WHITE);
+    text("CAT IS LIVING...", 14, 38, 0.34f, SEA_DARK);
 
     C2D_TargetClear(bottom_, PANEL_LIGHT);
     C2D_SceneBegin(bottom_);

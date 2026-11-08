@@ -3,7 +3,7 @@
 namespace catdrift {
 
 Game::Game() : state_{1, 4, "DRIFT SEA", "", CatMood::Calm,
-    "BEEPER: This is Cat. I am alive. The sea is quiet.", false, 0} {}
+    "BEEPER: This is Cat. I am alive. The sea is quiet.", false, 0}, idleSeconds_(0.0f) {}
 
 const GameState& Game::state() const {
     return state_;
@@ -11,6 +11,15 @@ const GameState& Game::state() const {
 
 GameState& Game::mutableState() {
     return state_;
+}
+
+bool Game::tick(float seconds) {
+    if (state_.lostContact) return false;
+    idleSeconds_ += seconds;
+    if (idleSeconds_ < 30.0f) return false;
+    idleSeconds_ -= 30.0f;
+    advanceDay();
+    return true;
 }
 
 void Game::receive(const std::string& message) {
@@ -65,6 +74,10 @@ void Game::advanceDay() {
     } else if (state_.mood == CatMood::Tired) {
         state_.mood = CatMood::Calm;
         receive("BEEPER: Good morning. I fixed the fishing rod." );
+    } else if (state_.day % 3 == 0) {
+        receive("BEEPER: I caught a silver fish. It was looking at the stars." );
+    } else if (state_.day % 3 == 1) {
+        receive("BEEPER: A gull visited the boat today. It knew the word 'north'." );
     }
     if (state_.day == 8 && state_.battery == 0) {
         state_.lostContact = true;

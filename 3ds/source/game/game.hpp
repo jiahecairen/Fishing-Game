@@ -28,6 +28,7 @@ public:
 
     const GameState& state() const;
     GameState& mutableState();
+    bool tick(float seconds);
     void sendInstruction(const std::string& destination);
     void observe();
     void waitAndSavePower();
@@ -35,6 +36,7 @@ public:
 
 private:
     GameState state_;
+    float idleSeconds_;
     void receive(const std::string& message);
 };
 
