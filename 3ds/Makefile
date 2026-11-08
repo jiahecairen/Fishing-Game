@@ -10,7 +10,7 @@ include $(DEVKITARM)/3ds_rules
 
 TARGET := cat-drift
 BUILD := build
-SOURCES := source source/game source/save
+SOURCES := source source/game source/save source/ui
 DATA := data
 INCLUDES := include
 GRAPHICS := gfx
@@ -22,7 +22,7 @@ CFLAGS += $(INCLUDE) -D__3DS__
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 ASFLAGS := -g $(ARCH)
 LDFLAGS = -specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
-LIBS := -lctru -lm
+LIBS := -lcitro2d -lcitro3d -lctru -lm
 LIBDIRS := $(CTRULIB)
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
