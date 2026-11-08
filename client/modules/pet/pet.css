@@ -1,0 +1,4 @@
+/* ===== 桌面宠物模式：只留下画布，其余全部隐藏，背景透明 ===== */
+html.pet, html.pet body { background: transparent !important; }
+html.pet body > *:not(#scene) { display: none !important; }
+html.pet canvas#scene { cursor: default; }
