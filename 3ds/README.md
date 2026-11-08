@@ -38,6 +38,8 @@ make emulator
 
 模拟器可以验证双屏布局、按键和游戏逻辑；真实 3DS 仍然需要最后做性能、触摸和设备行为测试。
 
+存档默认写入 SD 卡根目录：`sdmc:/cat-drift-save.txt`。
+
 ## 架构约束
 
 - `source/game/` 不依赖 3DS API，未来可移植到桌面和手机。

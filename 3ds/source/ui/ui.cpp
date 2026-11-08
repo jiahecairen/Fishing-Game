@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <string>
 
 namespace catdrift {
 namespace {
@@ -42,6 +43,8 @@ void Ui::text(const char* value, float x, float y, float size, u32 color, u32 fl
 
 void Ui::render(const GameState& state, bool saveOk) {
     char line[128];
+    std::string compactMessage = state.message;
+    if (compactMessage.size() > 34) compactMessage = compactMessage.substr(0, 31) + "...";
     time_ += 1.0f / 60.0f;
     const float wave = std::sin(time_ * 1.8f) * 3.0f;
     const float boatX = std::sin(time_ * 0.75f) * 3.0f;
@@ -129,7 +132,7 @@ void Ui::render(const GameState& state, bool saveOk) {
 
     rect(12, 144, 296, 52, PANEL);
     text("BEEPER", 20, 151, 0.38f, YELLOW);
-    text(state.message.c_str(), 20, 168, 0.34f, WHITE, C2D_WordWrap);
+    text(compactMessage.c_str(), 20, 168, 0.28f, WHITE);
     if (!state.lastCatch.empty()) {
         text("LAST CATCH", 20, 184, 0.28f, YELLOW);
         text(state.lastCatch.c_str(), 94, 184, 0.28f, WHITE);
@@ -165,7 +168,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("RUINS", 230, 121, 0.34f, INK);
     text(state.animal.empty() ? "ANIMAL LINK: NONE" : "ANIMAL LINK: GULL", 18, 134, 0.30f, SEA_DARK);
     text("BEEPER", 20, 151, 0.38f, YELLOW);
-    text(state.message.c_str(), 20, 168, 0.34f, WHITE, C2D_WordWrap);
+    text(compactMessage.c_str(), 20, 168, 0.28f, WHITE);
     if (!state.lastCatch.empty()) {
         text("LAST CATCH", 20, 184, 0.28f, YELLOW);
         text(state.lastCatch.c_str(), 94, 184, 0.28f, WHITE);

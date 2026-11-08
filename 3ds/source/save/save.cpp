@@ -7,7 +7,8 @@
 namespace catdrift {
 namespace {
 
-const char* SAVE_PATH = "sdmc:/3ds/cat-drift-save.txt";
+const char* SAVE_PATH = "sdmc:/cat-drift-save.txt";
+const char* LEGACY_SAVE_PATH = "sdmc:/3ds/cat-drift-save.txt";
 
 bool readLine(FILE* file, std::string& out) {
     char buffer[512];
@@ -23,6 +24,7 @@ bool readLine(FILE* file, std::string& out) {
 
 bool Save::load(GameState& state) {
     FILE* file = std::fopen(SAVE_PATH, "r");
+    if (!file) file = std::fopen(LEGACY_SAVE_PATH, "r");
     if (!file) return false;
 
     std::string line;
