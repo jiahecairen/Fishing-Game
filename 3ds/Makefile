@@ -55,7 +55,7 @@ export APP_TITLE := 小猫漂流
 export APP_DESCRIPTION := 一只猫在被海水覆盖的世界中等待你的指令
 export APP_AUTHOR := Cat Fishing / Codex MVP
 
-.PHONY: all clean
+.PHONY: all clean emulator
 
 all: $(BUILD) $(DEPSDIR)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
@@ -71,6 +71,9 @@ endif
 clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
+
+emulator: all
+	@open -a /Users/rain/Applications/Azahar.app $(CURDIR)/$(TARGET).3dsx
 
 else
 

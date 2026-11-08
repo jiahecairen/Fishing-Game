@@ -27,6 +27,17 @@ make
 
 将 `.3dsx` 放到 3DS SD 卡的 `3ds/` 目录即可通过 Homebrew Launcher 启动。
 
+## 本机模拟器
+
+本机已安装 Azahar（Apple Silicon 版本）。编译并启动模拟器：
+
+```sh
+cd 3ds
+make emulator
+```
+
+模拟器可以验证双屏布局、按键和游戏逻辑；真实 3DS 仍然需要最后做性能、触摸和设备行为测试。
+
 ## 架构约束
 
 - `source/game/` 不依赖 3DS API，未来可移植到桌面和手机。
