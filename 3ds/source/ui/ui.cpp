@@ -121,6 +121,7 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("DRIFT SEA", 50, 104, 0.35f, WHITE);
     text("OLD LAB", 199, 58, 0.34f, INK);
     text("RUINS", 230, 121, 0.34f, INK);
+    text(state.animal.empty() ? "ANIMAL LINK: NONE" : "ANIMAL LINK: GULL", 18, 134, 0.30f, SEA_DARK);
     if (!state.destination.empty()) text("ROUTE ACTIVE", 105, 38, 0.32f, SEA_DARK);
 
     rect(12, 144, 296, 52, PANEL);

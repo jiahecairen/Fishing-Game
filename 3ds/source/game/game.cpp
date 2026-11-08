@@ -2,7 +2,7 @@
 
 namespace catdrift {
 
-Game::Game() : state_{1, 4, "DRIFT SEA", "", "CLEAR", CatMood::Calm,
+Game::Game() : state_{1, 4, "DRIFT SEA", "", "CLEAR", "", CatMood::Calm,
     "BEEPER: This is Cat. I am alive. The sea is quiet.", false, 0}, idleSeconds_(0.0f) {}
 
 const GameState& Game::state() const {
@@ -49,6 +49,11 @@ void Game::observe() {
         return;
     }
     state_.battery--;
+    if (state_.day >= 2 && state_.animal.empty()) {
+        state_.animal = "GULL";
+        receive("GULL: The old lab is north. Follow the cold current.");
+        return;
+    }
     if (state_.location == "DRIFT SEA") {
         receive("SAT: Old lab reflection found, 2 days ahead." );
     } else {
@@ -89,6 +94,10 @@ void Game::advanceDay() {
         receive("BEEPER: I caught a silver fish. It was looking at the stars." );
     } else if (state_.day % 3 == 1) {
         receive("BEEPER: A gull visited the boat today. It knew the word 'north'." );
+    }
+    if (state_.day >= 4 && state_.animal.empty()) {
+        state_.animal = "GULL";
+        receive("GULL: Your signal is strange, little boat. I can guide you north.");
     }
     if (state_.day == 8 && state_.battery == 0) {
         state_.lostContact = true;

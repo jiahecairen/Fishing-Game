@@ -17,6 +17,7 @@ struct GameState {
     std::string location;
     std::string destination;
     std::string weather;
+    std::string animal;
     CatMood mood;
     std::string message;
     bool lostContact;
