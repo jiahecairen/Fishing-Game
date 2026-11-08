@@ -59,6 +59,8 @@ void Ui::render(const GameState& state, bool saveOk) {
     text("CAT DRIFT", 14, 7, 0.65f, WHITE);
     std::snprintf(line, sizeof(line), "DAY %d", state.day);
     text(line, 320, 8, 0.48f, YELLOW);
+    std::snprintf(line, sizeof(line), "BEEP %d", state.battery);
+    text(line, 250, 8, 0.42f, WHITE);
     if (!rain && !fog) circle(350, 62, 18, YELLOW);
     circle(110, 62, 13, WHITE);
     circle(126, 62, 17, WHITE);

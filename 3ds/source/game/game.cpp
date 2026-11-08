@@ -108,6 +108,11 @@ void Game::advanceDay() {
         state_.lastCatch = "SEA BOTTLE";
         receive("BEEPER: I found a bottle in the net. There is a map inside." );
     }
+    if (state_.day % 7 == 0) {
+        state_.battery++;
+        state_.lastCatch = "POWER CELL";
+        receive("BEEPER: A sealed power cell was hidden inside the wreckage." );
+    }
     if (state_.day >= 4 && state_.animal.empty()) {
         state_.animal = "GULL";
         receive("GULL: Your signal is strange, little boat. I can guide you north.");
