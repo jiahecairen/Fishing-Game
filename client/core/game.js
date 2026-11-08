@@ -58,7 +58,7 @@ const Game = {
   // ---------- 存档 ----------
   coreState() {
     return {
-      coins: 300, level: 1, exp: 0,
+      coins: CF.tune('econ.startCoins', 300), level: 1, exp: 0,
       gameMinutes: 6 * 60, weather: 'sunny', weatherUntil: 9 * 60,
       scene: 'lake', unlockedScenes: ['lake'],
       mode: 'fish',

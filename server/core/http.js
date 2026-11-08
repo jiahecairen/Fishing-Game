@@ -18,7 +18,7 @@ const MIME = {
 function createApp(opt) {
   const routes = [];
   const befores = [];
-  let staticDir = null;
+  const statics = []; // [{ prefix: '/admin/', dir }]，前缀长的优先
   const maxBody = (opt && opt.maxBodyKB || 4096) * 1024;
 
   const add = (method, p, fn) => routes.push({ method, path: p, fn });
@@ -28,7 +28,7 @@ function createApp(opt) {
     put: (p, fn) => add('PUT', p, fn),
     del: (p, fn) => add('DELETE', p, fn),
     before: fn => befores.push(fn),       // 每个 API 请求之前执行（例如解析登录令牌）
-    static: dir => { staticDir = dir; },
+    static: (dir, prefix) => { statics.push({ prefix: prefix || '/', dir }); statics.sort((a, b) => b.prefix.length - a.prefix.length); },
     listen: (port, host, cb) => server.listen(port, host, cb),
     routes,
   };
@@ -51,9 +51,13 @@ function createApp(opt) {
     });
   }
   function serveStatic(req, res, url) {
-    if (!staticDir) { res.writeHead(404); res.end('not found'); return; }
     let p = decodeURIComponent(url.pathname);
+    const m = statics.find(s => p.startsWith(s.prefix) || p + '/' === s.prefix);
+    if (!m) { res.writeHead(404); res.end('not found'); return; }
+    if (p + '/' === m.prefix) { res.writeHead(301, { Location: m.prefix }); res.end(); return; } // /admin → /admin/
+    p = '/' + p.slice(m.prefix.length);
     if (p.endsWith('/')) p += 'index.html';
+    const staticDir = m.dir;
     const file = path.normalize(path.join(staticDir, p));
     if (!file.startsWith(staticDir + path.sep) && file !== staticDir) { res.writeHead(403); res.end('forbidden'); return; }
     fs.stat(file, (err, st) => {

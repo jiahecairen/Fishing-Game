@@ -75,11 +75,11 @@ function enhMult(e) { return 1 + 0.15 * (e || 0); }
 function gearStats(g) {
   const E = enhMult(g.e), s = {};
   if (g.u) {
-    const U = UNIQUES[g.u];
+    const U = UNIQUES[g.u]; if (!U) return s;
     for (const [k, v] of Object.entries(U.stats)) s[k] = (k === 'crit' || k === 'luck') ? v : Math.round(v * E);
     return s;
   }
-  const t = g.tier, m = QUALITY[g.q].mult;
+  const t = g.tier, m = QUALITY[g.q].mult * CF.tune('gear.statMul', 1);
   if (g.slot === 'weapon') { s.atk = Math.round((6 + 10 * Math.pow(t, 1.3)) * m * E); if (g.q >= 2) s.crit = 0.02 * (g.q - 1); }
   if (g.slot === 'hat') { s.maxHp = Math.round(25 * Math.pow(t, 1.4) * m * E); s.def = Math.round((1.5 + 2 * Math.pow(t, 1.3)) * m * E); }
   if (g.slot === 'armor') { s.maxHp = Math.round(45 * Math.pow(t, 1.4) * m * E); s.def = Math.round((3 + 4 * Math.pow(t, 1.3)) * m * E); }
@@ -88,11 +88,11 @@ function gearStats(g) {
   return s;
 }
 function gearName(g) {
-  const base = g.u ? UNIQUES[g.u].name : (QUALITY[g.q].name === '普通' ? GEAR_BASES[g.slot][g.tier - 1] : `${QUALITY[g.q].name}·${GEAR_BASES[g.slot][g.tier - 1]}`);
+  const base = g.u ? (UNIQUES[g.u] ? UNIQUES[g.u].name : '已下架的装备') : (QUALITY[g.q].name === '普通' ? GEAR_BASES[g.slot][g.tier - 1] : `${QUALITY[g.q].name}·${GEAR_BASES[g.slot][g.tier - 1]}`);
   return base + (g.e ? ` +${g.e}` : '');
 }
 function gearColor(g) { return g.u ? UNIQUE_COLOR : QUALITY[g.q].color; }
-function gearGi(g) { return g.u || (SLOT_GI[g.slot] + g.tier); }
+function gearGi(g) { return g.u ? ((UNIQUES[g.u] && UNIQUES[g.u].icon) || g.u) : (SLOT_GI[g.slot] + g.tier); }
 function gearIconHTML(g, size) { return `<span class="gframe" style="--qc:${gearColor(g)}">${gi(gearGi(g), gearColor(g), size || '30px')}</span>`; }
 function gearValue(g) {
   const q = g.u ? 4 : g.q, m = QUALITY[q].mult;

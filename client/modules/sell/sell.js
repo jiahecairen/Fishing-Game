@@ -9,7 +9,7 @@ const Sell = {
   track: null, // 离线结算时统计招财猫卖了多少
   cheap: f => f.rarity === 'junk' || f.rarity === 'common',
   sellable: f => !!f && !f.treasure,
-  price(item) { return Math.max(1, Math.round(item.value * (1 + CF.sum('sell.price', item)))); },
+  price(item) { return Math.max(1, Math.round(item.value * (1 + CF.sum('sell.price', item)) * CF.tune('econ.sellMul', 1))); },
   dishPrice: id => (typeof DISHES !== 'undefined' && DISHES[id]) ? DISHES[id].price : 0,
 
   // 卖掉某个容器里的几条鱼

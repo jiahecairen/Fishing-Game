@@ -34,11 +34,14 @@ module.exports = {
       if (!tok) return;
       const s = sessions[hashToken(tok)];
       if (!s || s.expires < Date.now()) return;
-      const u = users.list[s.uid]; if (!u) return;
+      const u = users.list[s.uid]; if (!u || u.banned) return;
       req.user = u; req.session = s;
+      const now = Date.now(); if (!u.lastSeen || now - u.lastSeen > 60000) { u.lastSeen = now; store.touch('users'); } // 「最近在线」
     });
     // 给别的模块用：要求已登录
     ctx.requireUser = req => { if (!req.user) throw httpError(401, '请先登录', 'auth'); return req.user; };
+    ctx.users = users; ctx.sessions = sessions; ctx.hashPassword = scrypt; ctx.publicUser = publicUser;
+    const closed = () => { if (ctx.settings.maintenance) throw httpError(503, ctx.settings.maintenanceMsg || '服务器维护中', 'maintenance'); };
 
     function newSession(u) {
       const token = crypto.randomBytes(32).toString('base64url');
@@ -53,8 +56,8 @@ module.exports = {
     }
 
     app.post('/api/auth/register', async req => {
-      limit(req.ip);
-      if (config.allowRegister === false) throw httpError(403, '服务器暂时不开放注册');
+      limit(req.ip); closed();
+      if (ctx.settings.allowRegister === false) throw httpError(403, '服务器暂时不开放注册');
       const name = String(req.body.username || '').trim(), pw = String(req.body.password || '');
       if (!NAME_RE.test(name)) throw httpError(400, '用户名要 2~16 个字，只能用文字、数字和下划线');
       if (pw.length < 6 || pw.length > 64) throw httpError(400, '密码要 6~64 位');
@@ -70,11 +73,13 @@ module.exports = {
     app.post('/api/auth/login', async req => {
       limit(req.ip);
       const name = String(req.body.username || '').trim(), pw = String(req.body.password || '');
+      closed();
       const u = users.list[users.byName[name.toLowerCase()]];
       const bad = () => httpError(401, '用户名或密码不对');
       if (!u) { await scrypt(pw, 'x'); throw bad(); } // 防止通过耗时判断用户名是否存在
       const h = await scrypt(pw, u.salt);
       if (!crypto.timingSafeEqual(Buffer.from(h, 'hex'), Buffer.from(u.hash, 'hex'))) throw bad();
+      if (u.banned) throw httpError(403, '这个账号已被封禁' + (u.banReason ? '：' + u.banReason : ''), 'banned');
       return newSession(u);
     });
 

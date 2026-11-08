@@ -36,7 +36,7 @@ const Fishing = {
     if (p === 'night') phaseMod = this.S.perms.glowfloat ? 0.85 : 1.2;
     const frenzy = (this.S.buffs.frenzyUntil || 0) > Date.now() ? 0.5 : 1;
     const bonus = Math.min(0.6, CF.sum('fish.bite'));
-    return 7 * this.rod().speed * this.bait().bite * w.bite * phaseMod * frenzy * (1 - bonus) * rand(0.55, 1.45);
+    return CF.tune('fish.biteBase', 7) * this.rod().speed * this.bait().bite * w.bite * phaseMod * frenzy * (1 - bonus) * rand(0.55, 1.45);
   },
   fishPool(scene, phase, weather, tier) {
     const season = Game.season();
@@ -67,13 +67,13 @@ const Fishing = {
   escapeChance(fish, weather) {
     if (fish.rarity === 'junk' || fish.treasure) return 0;
     const w = WEATHERS[weather || this.S.weather];
-    return clamp(RARITY[fish.rarity].diff - this.control() + w.escape, 0.03, 0.85);
+    return clamp((RARITY[fish.rarity].diff - this.control() + w.escape) * CF.tune('fish.escapeMul', 1), 0.03 * Math.min(1, CF.tune('fish.escapeMul', 1)), 0.85);
   },
   makeCatch(fish, perfect) {
     if (fish.treasure) return { uid: Game.nextUid(), id: fish.id, size: 0, value: 0, treasure: true, ts: Date.now() };
     const r = Math.pow(Math.random(), perfect ? 0.7 : 1.5);
     const size = Math.round((fish.min + (fish.max - fish.min) * r) * 10) / 10;
-    const value = Math.max(1, Math.round(fish.price * (0.6 + 0.8 * r) * (1 + 0.02 * (this.S.level - 1)) * (1 + CF.sum('fish.price'))));
+    const value = Math.max(1, Math.round(fish.price * (0.6 + 0.8 * r) * (1 + 0.02 * (this.S.level - 1)) * (1 + CF.sum('fish.price')) * CF.tune('fish.priceMul', 1)));
     return { uid: Game.nextUid(), id: fish.id, size, value, star: r > 0.9, ts: Date.now() };
   },
   releaseExp(item) { return Math.max(1, Math.round(RARITY[FISH_BY_ID[item.id].rarity].exp * 0.5)); },
@@ -85,7 +85,7 @@ const Fishing = {
     const isNew = d.count === 0;
     d.count++; d.max = Math.max(d.max, item.size);
     S.stats.caught++;
-    Game.gainExp(RARITY[fish.rarity].exp * (isNew ? 2 : 1), quiet);
+    Game.gainExp(Math.round(RARITY[fish.rarity].exp * (isNew ? 2 : 1) * CF.tune('fish.expMul', 1)), quiet);
 
     let stored = null;
     if (S.bag.length < S.bagCap) { S.bag.push(item); stored = 'bag'; }
@@ -117,7 +117,7 @@ const Fishing = {
     if (!this.canStore()) { this.fsm = { phase: 'idle', t: 0, dur: 0, blocked: true }; Game.emit('status'); return false; }
     this.consumeBait();
     this.S.stats.casts++;
-    this.fsm = { phase: 'casting', t: 0, dur: 1.1, bait: this.S.bait };
+    this.fsm = { phase: 'casting', t: 0, dur: CF.tune('fish.castTime', 1.1), bait: this.S.bait };
     Game.emit('cast'); Game.changed();
     return true;
   },
@@ -135,7 +135,7 @@ const Fishing = {
   reel(perfect) {
     const fish = this.fsm.fish;
     const esc = this.escapeChance(fish) * (perfect ? 0.35 : 1);
-    this.fsm = { phase: 'reeling', t: 0, dur: 1.3, fish, perfect, escaped: Math.random() < esc };
+    this.fsm = { phase: 'reeling', t: 0, dur: CF.tune('fish.reelTime', 1.3), fish, perfect, escaped: Math.random() < esc };
     Game.emit('reel', { perfect });
   },
   update(dt) {
@@ -149,7 +149,7 @@ const Fishing = {
         if (f.t >= f.dur) { this.fsm = { phase: 'waiting', t: 0, dur: this.biteTime(), fish: this.rollFish() }; Game.emit('status'); }
         break;
       case 'waiting':
-        if (f.t >= f.dur) { this.fsm = { phase: 'bite', t: 0, dur: 1.6, fish: f.fish, autoAt: rand(0.55, 1.0) }; Game.emit('bite'); }
+        if (f.t >= f.dur) { this.fsm = { phase: 'bite', t: 0, dur: CF.tune('fish.biteWindow', 1.6), fish: f.fish, autoAt: rand(0.55, 1.0) * Math.min(1, CF.tune('fish.biteWindow', 1.6) / 1.6) }; Game.emit('bite'); }
         break;
       case 'bite':
         if (S.settings.auto && f.t >= f.autoAt) this.reel(false);
@@ -200,7 +200,7 @@ const Fishing = {
       if (gm >= S.weatherUntil) Game.rollWeather(S.scene, gm);
       if (!this.canStore()) { report.stopped = true; break; }
       const phase = phaseOf((gm / 60) % 24);
-      t += 1.1 + this.biteTime(phase, S.weather) + 0.8 + 1.3 + 1.6;
+      t += CF.tune('fish.castTime', 1.1) + this.biteTime(phase, S.weather) + 0.8 + CF.tune('fish.reelTime', 1.3) + 1.6;
       if (t > seconds) break;
       this.consumeBait(true);
       S.stats.casts++; report.casts++;

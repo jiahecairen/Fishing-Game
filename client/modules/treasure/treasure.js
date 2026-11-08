@@ -35,9 +35,9 @@ const Treasure = {
   },
   rollLoot(tier, gearTier) {
     const cap = gearTier || Game.progressTier(), out = [];
-    const coin = [0, rand(200, 600), rand(1000, 3000), rand(4000, 12000), rand(6000, 15000)][tier] * (0.6 + cap * 0.25);
+    const coin = [0, rand(200, 600), rand(1000, 3000), rand(4000, 12000), rand(6000, 15000)][tier] * (0.6 + cap * 0.25) * CF.tune('treasure.coinMul', 1);
     out.push({ type: 'coins', n: Math.round(coin / 10) * 10 });
-    const gearChance = [0, 0.45, 0.65, 0.85, 1][tier];
+    const gearChance = [0, CF.tune('treasure.gear1', 0.45), CF.tune('treasure.gear2', 0.65), CF.tune('treasure.gear3', 0.85), CF.tune('treasure.gear4', 1)][tier];
     for (let i = 0; i < (tier === 4 ? 2 : 1); i++) if (Math.random() < gearChance) {
       const t = tier === 1 ? cap - (Math.random() < 0.5 ? 1 : 0) : tier === 4 ? cap : cap + (tier === 3 && Math.random() < 0.25 ? 1 : 0);
       out.push({ type: 'gear', g: Hero.newGear(Math.max(1, t), [0, 1, 2, 2, 3][tier]) });
@@ -45,6 +45,7 @@ const Treasure = {
     const pool = [['bait:lure:10', 3], ['bait:shrimp:20', 3], ['bait:catnip:5', tier], ['item:luckbell:1', 2], ['item:raincharm:1', 1], ['item:fogbottle:1', 1],
       ['treasure:key:1', 2], ['treasure:map:1', tier >= 2 ? 1.2 : 0.4]];
     for (let i = 0; i < (tier === 1 ? 1 : 2); i++) { const [type, id, c] = weightedPick(pool).split(':'); out.push({ type, id, n: +c }); }
+    CF.call('treasure.extraLoot', tier, out); // 别的模块往宝箱里加东西（例如后台自定义的装备）
     return out;
   },
   // 发放奖励：coins / gear / 以及任何 Inv.kind 注册过的种类（bait、item、treasure、mat、dish……）

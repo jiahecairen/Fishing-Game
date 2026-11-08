@@ -45,6 +45,6 @@ CF.module({
       return null;
     });
     UI.goal(50, S => S.story.ending === 'spare' && !S.hiddenOpen.dream ? ['✨ 雾夜里，去湖畔钓一条湖神金鲤', 'dex'] : null);
-    UI.goal(99, S => [`🏆 图鉴 ${Object.keys(S.dex).length}/${FISH.length} · 隐藏装备 ${Object.keys(UNIQUES).filter(u => Hero.ownsUnique(u)).length}/${Object.keys(UNIQUES).length}`, 'dex']);
+    UI.goal(99, S => [`🏆 图鉴 ${Object.keys(S.dex).length}/${FISH.length} · 隐藏装备 ${Object.keys(UNIQUES).filter(u => !UNIQUES[u].custom && Hero.ownsUnique(u)).length}/${Object.keys(UNIQUES).filter(u => !UNIQUES[u].custom).length}`, 'dex']);
   },
 });

@@ -4,5 +4,5 @@ window.CF_CONFIG = {
   // 如果把客户端单独放在别处，就填完整地址，例如 'https://cat.example.com'
   server: '',
   // 每次发新版改一下，避免浏览器用旧缓存
-  build: '0.5.2',
+  build: '0.6.0',
 };

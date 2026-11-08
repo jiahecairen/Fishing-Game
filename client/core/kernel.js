@@ -40,6 +40,12 @@ const CF = {
   // 模块可以把「要先加载完的东西」（图片、图集……）放进来：CF.preload.push(promise)
   // 内核会在显示登录界面、读存档之前等它们（最多等 ms 毫秒，加载失败也不会卡住游戏）
   preload: [],
+
+  // ---------- 可调参数（后台管理页面里改的那些数值）----------
+  // 用法：CF.tune('fish.biteBase', 7) —— 后台没改过就用后面的默认值。
+  // 新增一个可调参数：在代码里这样写，再到 server/tuning/schema.js 里加一行（默认值要和这里一样）。
+  tuning: {},
+  tune(key, def) { const v = this.tuning[key]; return v === undefined || v === null || v === '' || Number.isNaN(v) ? def : v; },
   waitPreload(ms) {
     const all = Promise.all(this.preload.map(p => Promise.resolve(p).catch(e => console.warn('[CF] 资源加载失败', e))));
     return Promise.race([all, new Promise(r => setTimeout(r, ms || 4000))]);

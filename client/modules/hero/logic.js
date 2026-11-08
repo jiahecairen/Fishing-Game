@@ -145,6 +145,7 @@ const Hero = {
   giveUnique(u, quiet) {
     if (this.ownsUnique(u)) return null;
     const U = UNIQUES[u];
+    if (!U || CF.first('hero.uniqueBlocked', u)) return null; // 后台下架的装备不再发放
     const g = { uid: Game.nextUid(), u, slot: U.slot, tier: U.tier, q: 4, e: 0 };
     this.S.gear.push(g);
     if (!quiet) Game.toast(`✨ 获得隐藏装备「${U.name}」！`, 'good');
