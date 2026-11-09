@@ -4,3 +4,9 @@ build/
 *.smdh
 *.map
 *.lst
+*.t3x
+*.d
+*.h
+cat-drift.3dsx
+cat-drift.elf
+cat-drift.smdh

@@ -4,6 +4,13 @@
 #include <cstdio>
 #include <string>
 
+#include "cat_t3x.h"
+#include "boat_t3x.h"
+#include "rod_t3x.h"
+#include "fish_t3x.h"
+#include "cloud_t3x.h"
+#include "gull_t3x.h"
+
 namespace catdrift {
 namespace {
 
@@ -34,7 +41,11 @@ void circle(float x, float y, float radius, u32 color) {
 
 } // namespace
 
-Ui::Ui() : top_(nullptr), bottom_(nullptr), textBuf_(nullptr), time_(0.0f) {}
+Ui::Ui()
+    : top_(nullptr), bottom_(nullptr), textBuf_(nullptr),
+      catSheet_(nullptr), boatSheet_(nullptr), rodSheet_(nullptr),
+      fishSheet_(nullptr), cloudSheet_(nullptr), gullSheet_(nullptr),
+      cat_{}, boat_{}, rod_{}, fish_{}, cloud_{}, gull_{}, time_(0.0f) {}
 
 bool Ui::init() {
     if (!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE)) return false;
@@ -43,7 +54,20 @@ bool Ui::init() {
     top_ = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     bottom_ = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
     textBuf_ = C2D_TextBufNew(4096);
-    return top_ && bottom_ && textBuf_;
+    catSheet_ = C2D_SpriteSheetLoadFromMem(cat_t3x, cat_t3x_size);
+    boatSheet_ = C2D_SpriteSheetLoadFromMem(boat_t3x, boat_t3x_size);
+    rodSheet_ = C2D_SpriteSheetLoadFromMem(rod_t3x, rod_t3x_size);
+    fishSheet_ = C2D_SpriteSheetLoadFromMem(fish_t3x, fish_t3x_size);
+    cloudSheet_ = C2D_SpriteSheetLoadFromMem(cloud_t3x, cloud_t3x_size);
+    gullSheet_ = C2D_SpriteSheetLoadFromMem(gull_t3x, gull_t3x_size);
+    if (catSheet_) cat_ = C2D_SpriteSheetGetImage(catSheet_, 0);
+    if (boatSheet_) boat_ = C2D_SpriteSheetGetImage(boatSheet_, 0);
+    if (rodSheet_) rod_ = C2D_SpriteSheetGetImage(rodSheet_, 0);
+    if (fishSheet_) fish_ = C2D_SpriteSheetGetImage(fishSheet_, 0);
+    if (cloudSheet_) cloud_ = C2D_SpriteSheetGetImage(cloudSheet_, 0);
+    if (gullSheet_) gull_ = C2D_SpriteSheetGetImage(gullSheet_, 0);
+    return top_ && bottom_ && textBuf_ && catSheet_ && boatSheet_ && rodSheet_ &&
+        fishSheet_ && cloudSheet_ && gullSheet_;
 }
 
 void Ui::text(const char* value, float x, float y, float size, u32 color, u32 flags) {
@@ -90,29 +114,20 @@ void Ui::render(const GameState& state, bool saveOk) {
         rect(98, 57, 45, 10, WHITE);
     }
 
-    // Boat.
-    rect(137 + boatX, 148 + wave, 126, 22, BROWN);
-    rect(148 + boatX, 138 + wave, 98, 14, CREAM);
-    rect(191 + boatX, 100 + wave, 5, 39, BROWN);
-    C2D_DrawTriangle(196 + boatX, 105 + wave, WHITE, 248 + boatX, 129 + wave, WHITE,
-        196 + boatX, 129 + wave, WHITE, 0.5f);
-
-    // Large readable pixel cat.
-    rect(151 + boatX, 108 + wave + catY, 36, 30, ORANGE);
-    rect(156 + boatX, 99 + wave + catY, 29, 25, ORANGE);
-    C2D_DrawTriangle(156 + boatX, 105 + wave + catY, ORANGE, 159 + boatX, 91 + wave + catY, ORANGE,
-        166 + boatX, 104 + wave + catY, ORANGE, 0.5f);
-    C2D_DrawTriangle(174 + boatX, 104 + wave + catY, ORANGE, 181 + boatX, 91 + wave + catY, ORANGE,
-        185 + boatX, 106 + wave + catY, ORANGE, 0.5f);
-    rect(162 + boatX, 108 + wave + catY, 4, 4, BROWN);
-    rect(175 + boatX, 108 + wave + catY, 4, 4, BROWN);
-    rect(168 + boatX, 117 + wave + catY, 5, 3, BROWN);
+    // Pixel-art scene assets. Their transparent margins make the animation feel
+    // like a small diorama without hiding the status bar below.
+    C2D_DrawImageAt(cloud_, 24, 42, 0.25f, nullptr, 0.18f, 0.18f);
+    C2D_DrawImageAt(cloud_, 286, 45, 0.25f, nullptr, -0.16f, 0.16f);
+    C2D_DrawImageAt(gull_, 302, 80 + wave, 0.24f, nullptr, 0.14f, 0.14f);
+    C2D_DrawImageAt(boat_, 132 + boatX, 113 + wave, 0.42f, nullptr, 0.24f, 0.24f);
+    C2D_DrawImageAt(cat_, 145 + boatX, 83 + wave + catY, 0.35f, nullptr, 0.13f, 0.13f);
+    C2D_DrawImageAt(rod_, 204 + boatX, 77 + wave, 0.34f, nullptr, 0.13f, 0.13f);
 
     if (state.destination.empty()) {
         const float bobX = 285.0f + std::sin(time_ * 1.1f) * 4.0f;
         const float bobY = 164.0f + wave;
-        C2D_DrawLine(178 + boatX, 119 + wave + catY, BROWN, 214 + boatX, 86 + wave, BROWN, 2.0f, 0.3f);
-        C2D_DrawLine(214 + boatX, 86 + wave, WHITE, bobX, bobY, WHITE, 1.0f, 0.3f);
+        C2D_DrawLine(225 + boatX, 112 + wave, WHITE, bobX, bobY, WHITE, 1.0f, 0.3f);
+        C2D_DrawImageAt(fish_, bobX - 22.0f, bobY + 7.0f, 0.32f, nullptr, 0.07f, 0.07f);
         circle(bobX, bobY, 4, ORANGE);
         circle(bobX, bobY + 6, 10, C2D_Color32(0xA3, 0xE9, 0xEE, 0xA0));
     }
@@ -186,6 +201,12 @@ void Ui::render(const GameState& state, bool saveOk) {
 
 void Ui::shutdown() {
     if (textBuf_) C2D_TextBufDelete(textBuf_);
+    if (catSheet_) C2D_SpriteSheetFree(catSheet_);
+    if (boatSheet_) C2D_SpriteSheetFree(boatSheet_);
+    if (rodSheet_) C2D_SpriteSheetFree(rodSheet_);
+    if (fishSheet_) C2D_SpriteSheetFree(fishSheet_);
+    if (cloudSheet_) C2D_SpriteSheetFree(cloudSheet_);
+    if (gullSheet_) C2D_SpriteSheetFree(gullSheet_);
     C2D_Fini();
     C3D_Fini();
 }
