@@ -116,18 +116,20 @@ void Ui::render(const GameState& state, bool saveOk) {
 
     // Pixel-art scene assets. Their transparent margins make the animation feel
     // like a small diorama without hiding the status bar below.
-    C2D_DrawImageAt(cloud_, 24, 42, 0.25f, nullptr, 0.18f, 0.18f);
-    C2D_DrawImageAt(cloud_, 286, 45, 0.25f, nullptr, -0.16f, 0.16f);
-    C2D_DrawImageAt(gull_, 302, 80 + wave, 0.24f, nullptr, 0.14f, 0.14f);
-    C2D_DrawImageAt(boat_, 132 + boatX, 113 + wave, 0.42f, nullptr, 0.24f, 0.24f);
-    C2D_DrawImageAt(cat_, 145 + boatX, 83 + wave + catY, 0.35f, nullptr, 0.13f, 0.13f);
-    C2D_DrawImageAt(rod_, 204 + boatX, 77 + wave, 0.34f, nullptr, 0.13f, 0.13f);
+    C2D_DrawImageAt(cloud_, 24, 42, 0.65f, nullptr, 0.18f, 0.18f);
+    C2D_DrawImageAt(cloud_, 286, 45, 0.65f, nullptr, -0.16f, 0.16f);
+    C2D_DrawImageAt(gull_, 302, 80 + wave, 0.66f, nullptr, 0.14f, 0.14f);
+    // Keep scene art in front of the water fill (depth 0.5), otherwise only
+    // the transparent sprite margins remain visible at the waterline.
+    C2D_DrawImageAt(boat_, 132 + boatX, 113 + wave, 0.68f, nullptr, 0.24f, 0.24f);
+    C2D_DrawImageAt(cat_, 145 + boatX, 83 + wave + catY, 0.70f, nullptr, 0.13f, 0.13f);
+    C2D_DrawImageAt(rod_, 204 + boatX, 77 + wave, 0.69f, nullptr, 0.13f, 0.13f);
 
     if (state.destination.empty()) {
         const float bobX = 285.0f + std::sin(time_ * 1.1f) * 4.0f;
         const float bobY = 164.0f + wave;
         C2D_DrawLine(225 + boatX, 112 + wave, WHITE, bobX, bobY, WHITE, 1.0f, 0.3f);
-        C2D_DrawImageAt(fish_, bobX - 22.0f, bobY + 7.0f, 0.32f, nullptr, 0.07f, 0.07f);
+        C2D_DrawImageAt(fish_, bobX - 22.0f, bobY + 7.0f, 0.67f, nullptr, 0.07f, 0.07f);
         circle(bobX, bobY, 4, ORANGE);
         circle(bobX, bobY + 6, 10, C2D_Color32(0xA3, 0xE9, 0xEE, 0xA0));
     }
@@ -168,33 +170,33 @@ void Ui::render(const GameState& state, bool saveOk) {
     C2D_SceneBegin(top_);
     text("CAT DRIFT", 14, 6, 0.78f, WHITE);
     std::snprintf(line, sizeof(line), "BEEP %d", state.battery);
-    text(line, 250, 6, 0.52f, WHITE);
+    text(line, 250, 6, 0.58f, WHITE);
     std::snprintf(line, sizeof(line), "DAY %d", state.day);
     text(line, 320, 6, 0.58f, GOLD);
-    text("CAT IS LIVING...", 20, 47, 0.44f, MUTED);
-    text(state.destination.empty() ? "FISHING" : "SAILING", 278, 103, 0.42f, WHITE);
-    text("PLACE", 20, 208, 0.40f, GOLD);
-    text(state.location.c_str(), 72, 208, 0.40f, WHITE);
-    text(state.weather.c_str(), 185, 208, 0.40f, rain ? GOLD : WHITE);
-    text(state.lostContact ? "LOST" : "ONLINE", 305, 208, 0.34f, state.lostContact ? GOLD : WHITE);
+    text("CAT IS LIVING...", 20, 47, 0.50f, MUTED);
+    text(state.destination.empty() ? "FISHING" : "SAILING", 278, 103, 0.48f, WHITE);
+    text("PLACE", 20, 207, 0.46f, GOLD);
+    text(state.location.c_str(), 72, 207, 0.44f, WHITE);
+    text(state.weather.c_str(), 190, 207, 0.44f, rain ? GOLD : WHITE);
+    text(state.lostContact ? "LOST" : "ONLINE", 305, 207, 0.40f, state.lostContact ? GOLD : WHITE);
 
     C2D_SceneBegin(bottom_);
     text("SATELLITE MAP", 12, 6, 0.64f, WHITE);
-    text("DRIFT SEA", 42, 100, 0.40f, WHITE);
-    text("OLD LAB", 190, 53, 0.39f, INK);
-    text("RUINS", 226, 115, 0.39f, INK);
-    text(animal.c_str(), 16, 132, 0.34f, MUTED);
-    text("BEEPER", 18, 145, 0.46f, GOLD);
-    text(message.c_str(), 18, 163, 0.36f, WHITE);
+    text("DRIFT SEA", 42, 100, 0.46f, WHITE);
+    text("OLD LAB", 190, 53, 0.44f, INK);
+    text("RUINS", 226, 115, 0.44f, INK);
+    text(animal.c_str(), 16, 133, 0.40f, MUTED);
+    text("BEEPER", 18, 145, 0.52f, GOLD);
+    text(message.c_str(), 18, 163, 0.41f, WHITE);
     if (!state.lastCatch.empty()) {
-        text("CATCH", 18, 179, 0.32f, GOLD);
-        text(state.lastCatch.c_str(), 70, 179, 0.32f, WHITE);
+        text("CATCH", 18, 179, 0.38f, GOLD);
+        text(state.lastCatch.c_str(), 70, 179, 0.38f, WHITE);
     }
-    text("A GO", 25, 204, 0.42f, WHITE);
-    text("B SCAN", 90, 204, 0.39f, WHITE);
-    text("X REST", 166, 204, 0.39f, WHITE);
-    text("Y DAY", 251, 204, 0.39f, WHITE);
-    text(saveOk ? "SAVE OK" : "SAVE ERROR", 220, 184, 0.30f, saveOk ? MUTED : GOLD);
+    text("A GO", 25, 204, 0.48f, WHITE);
+    text("B SCAN", 90, 204, 0.45f, WHITE);
+    text("X REST", 166, 204, 0.45f, WHITE);
+    text("Y DAY", 251, 204, 0.45f, WHITE);
+    text(saveOk ? "SAVE OK" : "SAVE ERROR", 220, 184, 0.36f, saveOk ? MUTED : GOLD);
 
     C3D_FrameEnd(0);
 }
