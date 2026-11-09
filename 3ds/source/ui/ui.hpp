@@ -24,12 +24,14 @@ private:
     C2D_SpriteSheet fishSheet_;
     C2D_SpriteSheet cloudSheet_;
     C2D_SpriteSheet gullSheet_;
+    C2D_SpriteSheet castSheets_[4];
     C2D_Image cat_;
     C2D_Image boat_;
     C2D_Image rod_;
     C2D_Image fish_;
     C2D_Image cloud_;
     C2D_Image gull_;
+    C2D_Image castFrames_[4];
     float time_;
     void text(const char* value, float x, float y, float size, u32 color, u32 flags = 0);
 };
